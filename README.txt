@@ -1,10 +1,8 @@
-Created By : Suneel kaushik S
-Date : Feb 23 2019
-....................................
-HyBrid Framework with PDF reporting:
-....................................
+**_...................................._
+_HyBrid Framework with PDF reporting:_
+_...................................._**
 
-Target Platform : Testing : Functional and UI
+**Target Platform :** Testing : Functional and UI
 
 Required : 
 JRE 1.8.0 or Higher
