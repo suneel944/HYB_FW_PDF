@@ -1047,6 +1047,7 @@ public class Keywords extends BaseClass
 	{
 		try 
 		{
+			startWatch();
 			driver.navigate().back();
 			driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 			logResultAndCaptureImage("PASS", "Navigate Back", "Navigated Back To Previous Page Successfully", "NO");
@@ -1993,12 +1994,6 @@ public class Keywords extends BaseClass
 		}
 	}
 
-	public void browserBack() throws IOException 
-	{
-		startWatch();
-		driver.navigate().back();
-	}
-
 	public void refresh() 
 	{
 		driver.navigate().refresh();
@@ -2433,29 +2428,6 @@ public class Keywords extends BaseClass
 	public void deleteAllCookie()
 	{
 		driver.manage().deleteAllCookies();
-	}
-
-	public String extractAttributeFromObjectAndCompare(By by,String attributeName,String elementname, String data) throws Exception 
-	{
-		String result = null;
-		try 
-		{
-			WebElement e1 = driver.findElement(by);
-			String message = e1.getAttribute(attributeName);
-			if ((message.trim()).equalsIgnoreCase(data))
-			{
-				logResultAndCaptureImage("PASS", "Extract Attribute", "Extracted Attribute " +elementname+ " Successfully","YES");
-				result = message;
-			}
-			return result;
-		}
-		catch (Exception e) 
-		{
-			// TODO: handle exception
-			logResultAndCaptureImage("FAIL", "Extract Attribute", "Failed to Locate " +elementname, "YES");
-			e.printStackTrace();
-			return result;
-		}
 	}
 
 	public void verifyTextFromAlert(String data) throws Exception 
