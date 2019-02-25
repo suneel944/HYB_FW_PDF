@@ -20,6 +20,7 @@ public class examplePage extends BaseClass
 	}
 	//******************************************************************************************
 
+	@SuppressWarnings("static-access")
 	@Test
 	//******************************************************************************************
 	//TestCaseName : Provide Specific name
