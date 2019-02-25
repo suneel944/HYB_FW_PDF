@@ -104,33 +104,43 @@ public class Keywords extends BaseClass
 
 	static File imFILE;
 
-	StopWatch pageLoad = new StopWatch();
+	static StopWatch pageLoad = new StopWatch();
 	StopWatch timer = new StopWatch();
 
 	/**
 	 * Document
 	 */
-	Document document;
+	static Document document;
 
 	/**
 	 * PdfWriter
 	 */
-	PdfWriter writer;
+	static PdfWriter writer;
 
 	/**
 	 * PdfPTables
 	 */
-	PdfPTable statusTable;
+	static PdfPTable statusTable;
 
 	/**
 	 * PdfCell
 	 */
-	PdfPCell cell;
+	static PdfPCell cell;
 
 	/**
 	 * Overal Run Result
 	 */
 	private static boolean overalRunResultFlag = false;
+
+	/**
+	 * Passed Step Count
+	 */
+	private static int passStepCount = 0;
+
+	/**
+	 * Failed Step Count
+	 */
+	private static int failStepCount = 0;
 
 	//*******************************
 	//Date Declarations For Run Summary
@@ -150,10 +160,9 @@ public class Keywords extends BaseClass
 	//Constructor
 	//********************************************************************
 
-	@SuppressWarnings("static-access")
 	public Keywords(String testCaseName)
 	{
-		this.ClassName = testCaseName;
+		ClassName = testCaseName;
 	}
 
 	//******************************************************************************************************************************
@@ -187,7 +196,7 @@ public class Keywords extends BaseClass
 
 		//ImagePath
 		String imgPath = currentDir +"\\images\\ScreenShots\\page_"+imgdate1[1] + imgdate1[2] + imgdateval+".png";
-		
+
 		//Capture Image
 		try
 		{
@@ -198,30 +207,13 @@ public class Keywords extends BaseClass
 		{
 			e.printStackTrace();
 		}
-		
+
 		//return Image path
 		return imgPath;
 	}
 
 	protected static String takeScreenshot()
 	{
-		//****************************************************************************
-		//Folder path creation
-		//****************************************************************************
-		//If Images folder is not present create an image folder in current directory
-		imFILE = new File(currentDir +"\\images");
-		if (!imFILE.exists())
-		{
-			imFILE.mkdir();
-		}
-
-		//If Screenshots folder is not present, then create a screenshot folder in current directory
-		imFILE = new File(currentDir + "\\images\\Screenshots");
-		if (!imFILE.exists())
-		{
-			imFILE.mkdir();
-		}
-
 		//****************************************************************************
 
 		//Image Time Stamp
@@ -234,20 +226,51 @@ public class Keywords extends BaseClass
 		String imgPath = currentDir +"\\images\\ScreenShots\\page_"+imgdate1[1] + imgdate1[2] + imgdateval+".png";
 
 		//****************************************************************************
-
-		//GetScreenShot Method Directory and Image File
-		File getSreenShotMethodImageFile = new File (imgPath);
-
-		//Take Screenshot of viewable area
-		File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-		//Write Screenshot to a file
-		try 
+		try
 		{
-			FileUtils.copyFile(scrFile, getSreenShotMethodImageFile);
-		} 
-		catch (IOException e) 
+			//****************************************************************************
+			//Folder path creation
+			//****************************************************************************
+			//If Images folder is not present create an image folder in current directory
+			imFILE = new File(currentDir +"\\images");
+			if (!imFILE.exists())
+			{
+				imFILE.mkdir();
+			}
+
+			//If Screenshots folder is not present, then create a screenshot folder in current directory
+			imFILE = new File(currentDir + "\\images\\Screenshots");
+			if (!imFILE.exists())
+			{
+				imFILE.mkdir();
+			}
+
+			//GetScreenShot Method Directory and Image File
+			File getSreenShotMethodImageFile = new File (imgPath);
+
+			//Take Screenshot of viewable area
+			File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+			//Write Screenshot to a file
+			try 
+			{
+				FileUtils.copyFile(scrFile, getSreenShotMethodImageFile);
+			} 
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		catch(Exception e)
 		{
-			// TODO Auto-generated catch block
+			try 
+			{
+				terminateIfWebDriverExecution(e);
+			}
+			catch (Exception e1) 
+			{
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 		return imgPath;
@@ -265,11 +288,10 @@ public class Keywords extends BaseClass
 	//Start Report
 	//******************************************************************************************************************************
 
-	@SuppressWarnings("static-access")
 	public void startReport(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl)
 	{	
 
-		this.TestCaseName = TestCaseName;
+		Keywords.TestCaseName = TestCaseName;
 		pageLoad.reset();
 		pageLoad.start();
 
@@ -278,31 +300,30 @@ public class Keywords extends BaseClass
 		//****************************************************************************
 
 		//Create pdf_Reports folder if it is not created
-		this.FILE = new File(currentDir+"\\pdf_Reports");
-		if (!this.FILE.exists())
+		FILE = new File(currentDir+"\\pdf_Reports");
+		if (!FILE.exists())
 		{
-			this.FILE.mkdir();
+			FILE.mkdir();
 		}
 
-		this.dateFolder = currentDir+"\\pdf_Reports\\"+this.date1[1]+"_"+this.date1[2]+"_"+this.date1[5];
+		dateFolder = currentDir+"\\pdf_Reports\\"+date1[1]+"_"+date1[2]+"_"+date1[5];
 
-		this.FILE = new File(dateFolder);
-		if (!this.FILE.exists())
+		FILE = new File(dateFolder);
+		if (!FILE.exists())
 		{
-			this.FILE.mkdir();
+			FILE.mkdir();
 		}
 
 		//Create page specific folder 
-		this.FILE = new File(dateFolder+"\\"+this.ClassName);
-		if (!this.FILE.exists())
+		FILE = new File(dateFolder+"\\"+ClassName);
+		if (!FILE.exists())
 		{
-			this.FILE.mkdir();
+			FILE.mkdir();
 		}
 		try
 		{
-			this.document = new Document(PageSize.A4);
-			writer = PdfWriter.getInstance(document, new FileOutputStream(new File(dateFolder+"\\"+this.ClassName+"\\"+this.TestCaseName+ "_" + date1[1] + date1[2] + dateval +".pdf")));
-			/*PdfWriter.getInstance(document, new FileOutputStream(new File (FILE)));*/
+			document = new Document(PageSize.A4);
+			writer = PdfWriter.getInstance(document, new FileOutputStream(new File(dateFolder+"\\"+ClassName+"\\"+Keywords.TestCaseName+ "_" + date1[1] + date1[2] + dateval +".pdf")));
 			document.open();
 
 			//***************************************************************************************************************************
@@ -358,7 +379,7 @@ public class Keywords extends BaseClass
 			if ((reportLogo.getWidth()>525.00) | (reportLogo.getHeight()>500.00))
 			{
 				reportLogo.scaleToFit(500, 600);
-				reportLogo.setAlignment(reportLogo.ALIGN_CENTER);
+				reportLogo.setAlignment(Element.ALIGN_CENTER);
 			}
 
 			//Add DXC Logo
@@ -374,7 +395,7 @@ public class Keywords extends BaseClass
 	}
 
 	@SuppressWarnings("deprecation")
-	public void logResultAndCaptureImage(String Status, String StepName, String StepDescription, String screenCapture, String ...args) 
+	public static void logResultAndCaptureImage(String Status, String StepName, String StepDescription, String screenCapture, String ...args) 
 			throws DocumentException, MalformedURLException, Exception
 	{
 		java.util.Date date1 = new java.util.Date();
@@ -387,34 +408,34 @@ public class Keywords extends BaseClass
 			Font blackTimesNormal = new Font(FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
 			Font blackTimesBold = new Font(FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
 
-			this.statusTable = new PdfPTable(new float[]{.5f, .5f, .2f, .6f});
+			statusTable = new PdfPTable(new float[]{.5f, .5f, .2f, .6f});
 			Chunk stepDetails = new Chunk("Step Details", blackTimesBold);
 			Paragraph p = new Paragraph(stepDetails);
 			p.setAlignment(Element.ALIGN_LEFT);
 			cell = new PdfPCell(p);
 			cell.setColspan(4);
 			cell.setBackgroundColor(new BaseColor(208, 211, 212));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 
 			Chunk stepNameHeading = new Chunk("Step Name", blackTimesBold);
 			cell = new PdfPCell(new Paragraph(stepNameHeading));
 			cell.setBackgroundColor(new BaseColor(208, 211, 212));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 
 			Chunk stepDescriptionHeading = new Chunk("Step Description", blackTimesBold);
 			cell = new PdfPCell(new Paragraph(stepDescriptionHeading));
 			cell.setBackgroundColor(new BaseColor(208, 211, 212));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 
 			Chunk statusHeading = new Chunk("Status", blackTimesBold);
 			cell = new PdfPCell(new Paragraph(statusHeading));
 			cell.setBackgroundColor(new BaseColor(208, 211, 212));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 
 			Chunk timeHeading = new Chunk("Time", blackTimesBold);
 			cell = new PdfPCell(new Paragraph(timeHeading));
 			cell.setBackgroundColor(new BaseColor(208, 211, 212));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 
 			//******************************************************************************************************************************
 			//Appending Data To Table
@@ -422,11 +443,11 @@ public class Keywords extends BaseClass
 			//Step name
 			Chunk stepName = new Chunk(StepName, blackTimesNormal);
 			cell = new PdfPCell(new Paragraph(stepName));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 			//Step description
 			Chunk stepDescription = new Chunk(StepDescription, blackTimesNormal);
 			cell = new PdfPCell(new Paragraph(stepDescription));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 
 			//Status
 			if (Status.equalsIgnoreCase("PASS"))
@@ -434,22 +455,29 @@ public class Keywords extends BaseClass
 				Font green = new Font(FontFamily.HELVETICA, 10, Font.NORMAL, new BaseColor(39, 174, 96));
 				Chunk greenStatus = new Chunk(Status, green);
 				cell = new PdfPCell(new Paragraph(greenStatus));
-				this.statusTable.addCell(cell);
+				statusTable.addCell(cell);
+
+				//Increment pass step count
+				passStepCount+=1;
 			}
 			else if (Status.equalsIgnoreCase("Fail"))
 			{
 				Font red = new Font(FontFamily.HELVETICA, 10, Font.NORMAL, new BaseColor(231, 76, 60));
 				Chunk redStatus = new Chunk(Status, red);
 				cell = new PdfPCell(new Paragraph(redStatus));
-				this.statusTable.addCell(cell);
+				statusTable.addCell(cell);
+
 				//Change the result flag to "True"
 				overalRunResultFlag = true;
+
+				//Increment fail step count
+				failStepCount+=1;
 			}
 
 			//Time
 			Chunk time = new Chunk(date1.toLocaleString(), blackTimesNormal);
 			cell = new PdfPCell(new Paragraph(time));
-			this.statusTable.addCell(cell);
+			statusTable.addCell(cell);
 
 			//Update Report
 			updateReport();
@@ -472,14 +500,25 @@ public class Keywords extends BaseClass
 				document.add(new Paragraph(new Paragraph("Screenshot : ", new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD))));
 				//Image
 				Image img = null;
-				if(args[0].contains(currentDir))
+				try
 				{
-					img = Image.getInstance(args[0]);
+					if(args[0].contains(currentDir))
+					{
+						img = Image.getInstance(args[0]);
+					}
+					else
+					{
+						/*Suppose if the arg[0] does contain data and if it is not equal
+						 * to the required condition
+						 */
+						throw new NullPointerException();
+					}
 				}
-				else
+				catch(NullPointerException | ArrayIndexOutOfBoundsException e)
 				{
 					img = Image.getInstance(takeScreenshot());
 				}
+
 				//If image size exceeds a threshold value decrease it to below size
 				if (img.getWidth()>600.00)
 				{
@@ -498,7 +537,6 @@ public class Keywords extends BaseClass
 		}
 		catch (Exception e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -507,11 +545,11 @@ public class Keywords extends BaseClass
 	//Update Report
 	//******************************************************************************************************************************
 
-	public void updateReport()
+	public static void updateReport()
 	{
-		if (this.statusTable != null)
+		if (statusTable != null)
 		{
-			this.statusTable.setSpacingBefore(15f);
+			statusTable.setSpacingBefore(15f);
 			try 
 			{
 				//If in case the page space is less add a new page
@@ -530,14 +568,13 @@ public class Keywords extends BaseClass
 				document.add(new Paragraph("\n"));
 
 				//Add the table
-				this.document.add(this.statusTable);
+				document.add(statusTable);
 			}
 			catch (DocumentException e) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			this.statusTable.setSpacingAfter(15f);
+			statusTable.setSpacingAfter(15f);
 		}
 	}
 
@@ -545,7 +582,7 @@ public class Keywords extends BaseClass
 	//End Report
 	//******************************************************************************************************************************
 	@SuppressWarnings("deprecation")
-	public void endReport()
+	public static void endReport()
 	{
 		java.util.Date runEndTimeStamp = new java.util.Date();
 
@@ -628,6 +665,12 @@ public class Keywords extends BaseClass
 				document.add(p8);
 			}
 
+			//Overall Passed Steps
+			document.add(new Paragraph("Overall Steps Passed : " +passStepCount, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+			//Overall Failed Steps
+			document.add(new Paragraph("Overall Steps Failed : " +failStepCount, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
 			//Run Started
 			document.add(new Paragraph("Run Started : " +runStartTimeStamp.toLocaleString(), new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
 
@@ -658,6 +701,27 @@ public class Keywords extends BaseClass
 	//******************************************************************************************************************************
 	//******************************************************************************************************************************
 	//******************************************************************************************************************************
+	protected static void terminateIfWebDriverExecution(Exception exception) throws Exception
+	{
+		if(exception.toString().contains("WebDriverException"))
+		{
+			//Log
+			logResultAndCaptureImage("FAIL", "Fatal Error", "Webdriver Has Abruptly Ended/Terminated", "NO");
+
+			//End Report
+			endReport();
+
+			//Print The Below Statement To Attract User Attention
+			System.err.println("Chrome Session Abruptly Ended/Terminated");
+			System.out.println("*********************************************");
+			System.out.println("Report Has been Generated!!!");
+			System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+
+			//Exit Execution
+			System.exit(1);
+		}
+	}
+
 	public void launchApplication(String browserName, String url) throws Exception 
 	{
 		// Launch Browser
@@ -694,6 +758,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Launch Application", "Failed To Launch The Application", "YES");
 			e.printStackTrace();
@@ -719,6 +784,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Input", "Failed To Locate " +elementname+ " Text field.", "YES");
 			e.printStackTrace();
 		}
@@ -743,6 +810,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Clear Text", "Failed To Clear " + elementname + " Field.", "YES");
 			e.printStackTrace();
 		}
@@ -767,6 +836,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Click Object", "Failed To Click On " + elementname + " Object.", "YES");
 			e.printStackTrace();
 		}
@@ -785,6 +856,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Click Object", "Failed To Click On " + elementname + " Element.", "YES");
 			e.printStackTrace();
 		}
@@ -807,6 +880,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Element Should Contain", data+" Is Not Present In Element", "YES");
 			e.printStackTrace();
 		}
@@ -829,6 +904,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("PASS", "Element Should Not Contain", data+" Is Not Presents In Element", "YES");
 			e.printStackTrace();
 		}
@@ -854,6 +931,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Validate Element Is Enabled",  elementname + " Element Is Disabled.", "YES");
 			e.printStackTrace();
 		}
@@ -878,6 +957,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Element Disabled", elementname + " Element Is Not Disabled", "NO");
 			e.printStackTrace();
 		}
@@ -896,6 +977,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Scroll Page Down", "Unable To Scroll Page Down", "YES");
 			e.printStackTrace();
 		}
@@ -913,6 +996,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Scroll Page Up", "Unable To Scroll Page Up", "YES");
 			e.printStackTrace();
 		}
@@ -920,13 +1005,23 @@ public class Keywords extends BaseClass
 
 	public void scrollToView(By by) throws Exception 
 	{
-		//Wait till the element is visible
-		//Fluentwait
-		WebElement e1;
-		e1 = fluentWait(by, 2);
+		try
+		{
+			//Wait till the element is visible
+			//Fluentwait
+			WebElement e1;
+			e1 = fluentWait(by, 2);
 
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", e1);
-		Thread.sleep(3000);
+			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", e1);
+			Thread.sleep(3000);
+		}
+		catch(Exception e)
+		{
+			terminateIfWebDriverExecution(e);
+			//Log
+			logResultAndCaptureImage("FAIL", "Error : Scroll To View", "Could Not Locate The Element", "NO");
+			e.printStackTrace();
+		}
 	}
 
 	public void closeBrowser() throws Exception 
@@ -939,6 +1034,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Close Browser", "Failed to Close Browser", "YES");
 			e.printStackTrace();
 		}
@@ -954,6 +1051,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Close All Browser", "Failed To Close All Browser", "YES");
 			e.printStackTrace();
 		}
@@ -981,6 +1080,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Confirm Alert Popup", "Either Failed to Accecpt Alert/The Alert window didn't Popup", "YES", takeNativeScreenshot());
 			e.printStackTrace();
 		}
@@ -1000,6 +1101,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Dismiss Alert Popup", "Failed To Dismiss Alert", "YES", takeNativeScreenshot());
 			e.printStackTrace();
 		}
@@ -1022,6 +1125,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Double Click", " Failed To Locate " + elementname + " Element.", "YES");
 			e.printStackTrace();
 		}
@@ -1038,6 +1143,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Refresh Or Reload Page", "Failed to Refresh page", "YES");
 			e.printStackTrace();
 		}
@@ -1055,6 +1162,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Navigate Back", "Failed To Navigate To Back Page", "YES");
 			e.printStackTrace();
 		}
@@ -1084,6 +1193,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Select Checkbox", "Failed To Locate " +elementname+ " Checkbox", "YES");
 			e.printStackTrace();
 		}
@@ -1113,6 +1224,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Unselect Checkbox", " Checkbox Is Already Unselected", "YES");
 			e.printStackTrace();
 		}
@@ -1136,6 +1249,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Select By Index From Dropdown", "Failed to select " + elementname + " from the dropdown.", "YES");
 			e.printStackTrace();
 		}
@@ -1157,6 +1272,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Select By Text From Dropdown", "Failed to select " + elementname + " from the dropdown.", "YES");
 			e.printStackTrace();
 		}
@@ -1164,7 +1281,7 @@ public class Keywords extends BaseClass
 
 	public void selectByValue(By by, String elementname, String data) throws Exception 
 	{
-		try 
+		try
 		{
 			WebDriverWait wait = new WebDriverWait(driver, 120);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(by));
@@ -1179,6 +1296,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Select By Value From Dropdown", "Failed to select " + elementname + " from the dropdown.", "YES");
 			e.printStackTrace();
 		}
@@ -1194,6 +1313,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Verify Page Title", "Page Title " +"'"+Text+"'"+ " Does Not Match", "NO");
 			e.printStackTrace();
 		}
@@ -1212,6 +1333,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Switch In To Frame By Index", "Failed To Switch In To Frame.", "YES");
 			e.printStackTrace();
 		}
@@ -1231,6 +1354,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Switch In To Frame", "Failed To Locate Frame.", "YES");
 			e.printStackTrace();
 		}
@@ -1247,6 +1372,8 @@ public class Keywords extends BaseClass
 		{
 			// TODO: handle exception
 			logResultAndCaptureImage("FAIL", "Error : Time Out", "Element Is Not Clickable in the page", "YES");
+			terminateIfWebDriverExecution(e);
+			//Log
 			e.printStackTrace();
 		}
 	}
@@ -1261,6 +1388,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Time Out", "Element Is Not Visible In The Page", "YES");
 			e.printStackTrace();
 		}
@@ -1287,6 +1416,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Click Radio Button", "Failed To Identify " + elementname+ " Radio Button", "YES");
 			e.printStackTrace();
 		}
@@ -1312,6 +1443,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Click Radio Button By Value", "Failed To Click " + data + " Radio Button.", "YES");
 			e.printStackTrace();
 		}
@@ -1337,6 +1470,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Uncheck All Checkbox", "Failed To Unselect Checkboxes.", "YES");
 			e.printStackTrace();
 		}	
@@ -1375,6 +1510,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Checkbox Is Not Selected", "Failed To Identify The " +elementname+ " Element", "YES");
 			e.printStackTrace();
 			return false;
@@ -1383,7 +1520,7 @@ public class Keywords extends BaseClass
 
 	public void verifyIsCheckboxUnSelected(By by, String elementname) throws Exception 
 	{
-		try 
+		try
 		{
 			//Fluentwait
 			WebElement e1;
@@ -1403,6 +1540,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Checkbox Is Not Selected", "Failed To Identify The " +elementname+ " Element", "YES");
 			e.printStackTrace();
 		}
@@ -1428,9 +1567,11 @@ public class Keywords extends BaseClass
 			}
 
 		} 
-		catch (Exception e) 
+		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log If Required
 			if (!(elementname.equalsIgnoreCase("NO")))
 			{
 				logResultAndCaptureImage("FAIL", "Verify Element Is Visible", elementname+ " Element Is Not Visible", "NO");
@@ -1455,6 +1596,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("PASS", "Verify Element Is Not Visible", elementname+ " Element Is Not Visible", "YES");
 			e.printStackTrace();
 		}
@@ -1476,6 +1619,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Page Contain Text", "Error While Locating The Text " +text, "YES");
 			e.printStackTrace();
 		}
@@ -1502,6 +1647,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Page Contain Image", "Error In Locating " +elementname+ " Image", "YES");	
 			e.printStackTrace();
 		}
@@ -1524,6 +1671,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Perform Mouse Hower", "Failed To Mouseover On " +elementname, "NO");
 			e.printStackTrace();
 		}
@@ -1549,6 +1698,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Select Menu Through Mouse Hower", "Failed To Select Menu " +elementname+ " Through Mouse Hover", "NO");
 			e.printStackTrace();
 		}
@@ -1573,6 +1724,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Send A Keyboard Event", "Failed to Click  the Keyboard.", "NO");
 			e.printStackTrace();
 		}	
@@ -1595,6 +1748,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Compare Header Count", "Failed To Get Header Count", "YES");
 			e.printStackTrace();
 		}	
@@ -1621,6 +1776,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Verify Table Existence", "Failed To Find Table", "YES");
 			e.printStackTrace();	
 		}
@@ -1658,6 +1815,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Verify Link Existence", elementname+ " Link " +" Does Not Exist", "YES");
 			e.printStackTrace();
 		}
@@ -1690,6 +1849,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Table Should Contain", "Failed To Find "+ "'"+ data+"'" +" In Table", "YES");
 			e.printStackTrace();	
 		}
@@ -1722,6 +1883,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("PASS", "Table Should Not Contain", "Failed to find "+"'" +data+"'"+ " In Table", "YES");
 			e.printStackTrace();
 		}
@@ -1755,6 +1918,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Click Link", link+" Link Not Found In Table", "YES");
 			e.printStackTrace();	
 		}
@@ -1780,6 +1945,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error", "Failed To Load Page With Title : " + url, "YES");
 			e.printStackTrace();
 		}
@@ -1801,6 +1968,9 @@ public class Keywords extends BaseClass
 		}
 		catch (Exception e)
 		{
+			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error", "Failed To Locate The Object", "YES");
 			return e1.isDisplayed();
 		}
@@ -1833,11 +2003,18 @@ public class Keywords extends BaseClass
 					logResultAndCaptureImage("FAIL", "Verify Page Is Displayed", pageName + " page is not Displayed", "YES");
 				}
 			}
+			else
+			{
+				//raise exception
+				throw new NoSuchElementException("Element is not visible");
+			}
 		}
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			logResultAndCaptureImage("FAIL", "Error", "Failed As Element " + pageName + " Could Not Be Located", "YES");
+			terminateIfWebDriverExecution(e);
+			//Log
+			logResultAndCaptureImage("FAIL", "Error : Verify Page Is Displayed", "Failed As " + pageName + " Page Could Not Be Located", "YES");
 			e.printStackTrace();
 		}
 	}
@@ -1860,6 +2037,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error", title + "page is not Displayed", "YES");
 			e.printStackTrace();
 		}
@@ -1881,6 +2060,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Content Validation", "'"+data+ "'"+ " Is Not Present In Element", "YES");
 			e.printStackTrace();
 		}
@@ -1918,6 +2099,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Switch Tabs", "Unable To Switch To The Preceding Window", "YES");
 			e.printStackTrace();
 		}
@@ -1936,6 +2119,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Switch Tabs", "Unable To Switch To " +tabIndex+ " tab", "YES");
 			e.printStackTrace();			
 		}
@@ -1973,6 +2158,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Switch Tabs", "Unable To Switch To The Succeeding Window", "YES");
 			e.printStackTrace();
 		}
@@ -1989,22 +2176,46 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			logResultAndCaptureImage("FAIL", "Switch Tabs", "Unable To Switch To The Default Window", "YES");
+			terminateIfWebDriverExecution(e);
+			//Log
+			logResultAndCaptureImage("FAIL", "Switch To Tab", "Unable To Switch To The Default Window", "YES");
 			e.printStackTrace();
 		}
 	}
 
-	public void refresh() 
+	public void refresh() throws Exception 
 	{
-		driver.navigate().refresh();
+		try
+		{
+			driver.navigate().refresh();
+		}
+		catch(Exception e)
+		{
+			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
+			logResultAndCaptureImage("FAIL", "Error : Refresh Page", "Failed To Refresh Page", "YES");
+			e.printStackTrace();
+		}
 	}
 
-	public String getCurrentUrl() throws IOException 
+	public String getCurrentUrl() throws Exception 
 	{
-		return driver.getCurrentUrl();
+		try
+		{
+			return driver.getCurrentUrl();
+		}
+		catch(Exception e)
+		{
+			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
+			logResultAndCaptureImage("FAIL", "Error : Fetch Current URL", "Failed To Fetch Current URL", "NO");
+		}
+		return null;
 	}
 
-	public void waitForPageLoad() 
+	public void waitForPageLoad() throws Exception 
 	{
 		FluentWait<WebDriver> wait = getFluentWait();
 		try 
@@ -2024,6 +2235,9 @@ public class Keywords extends BaseClass
 		} 
 		catch (Exception e) 
 		{
+			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -2036,9 +2250,9 @@ public class Keywords extends BaseClass
 		ignoreExceptionClasses.add(StaleElementReferenceException.class);
 		try
 		{
-			//Fluent wait - wait till element is visible - poll for 120 seconds, @ pollingValue seconds interval
+			//Fluent wait - wait till element is visible - poll for 90 seconds, @ pollingValue seconds interval
 			Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
-					.withTimeout(120, TimeUnit.SECONDS)
+					.withTimeout(90, TimeUnit.SECONDS)
 					.pollingEvery(pollingValue, TimeUnit.SECONDS)
 					.ignoreAll(ignoreExceptionClasses);
 
@@ -2054,6 +2268,16 @@ public class Keywords extends BaseClass
 		}
 		catch (Exception e)
 		{
+			// TODO: handle exception
+			try 
+			{
+				terminateIfWebDriverExecution(e);
+			} 
+			catch (Exception e1) 
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		return null;
 	}
@@ -2065,7 +2289,7 @@ public class Keywords extends BaseClass
 		ignoreExceptionClasses.add(ElementNotVisibleException.class);
 		ignoreExceptionClasses.add(InvalidElementStateException.class);
 		ignoreExceptionClasses.add(StaleElementReferenceException.class);
-		try 
+		try
 		{
 			FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(60, TimeUnit.SECONDS)
 					.pollingEvery(1, TimeUnit.SECONDS).ignoreAll(ignoreExceptionClasses);
@@ -2073,28 +2297,58 @@ public class Keywords extends BaseClass
 		} 
 		catch (Exception e) 
 		{
+			// TODO: handle exception
+			try 
+			{
+				terminateIfWebDriverExecution(e);
+			} 
+			catch (Exception e1) 
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		return null;
 	}
 
-	public String capturePageTitle() 
+	public String capturePageTitle() throws Exception 
 	{
-		return driver.getTitle();
+		try
+		{
+			return driver.getTitle();
+		}
+		catch(Exception e)
+		{
+			// TODO : handle exception
+			terminateIfWebDriverExecution(e);
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public int validateTotalNumberOfElements(By by,int expectedCount,String elementName) throws Exception 
 	{
-		List<WebElement> allElements = driver.findElements(by);
-		int totalCount = allElements.size();
-		if (totalCount==expectedCount) 
+		try
 		{
-			logResultAndCaptureImage("PASS", "Validate Elements Count", elementName+" Actual And Expected Counts Are Identical", "YES");
-		} 
-		else 
-		{
-			logResultAndCaptureImage("FAIL", "Validate Elements Count", elementName+" Actual And Expected Count Does not Match","YES");
+			List<WebElement> allElements = driver.findElements(by);
+			int totalCount = allElements.size();
+			if (totalCount==expectedCount) 
+			{
+				logResultAndCaptureImage("PASS", "Validate Elements Count", elementName+" Actual And Expected Counts Are Identical", "YES");
+			} 
+			else 
+			{
+				logResultAndCaptureImage("FAIL", "Validate Elements Count", elementName+" Actual And Expected Count Does not Match","YES");
+			}
+			return totalCount;
 		}
-		return totalCount;
+		catch(Exception e)
+		{
+			// TODO : handle exception
+			terminateIfWebDriverExecution(e);
+			e.printStackTrace();
+			return 0;
+		}
 	}
 
 	public void startWatch() throws IOException 
@@ -2111,38 +2365,103 @@ public class Keywords extends BaseClass
 
 	public String getText(By by)
 	{
-		//Fetch the requested property
-		String textProperty = driver.findElement(by).getText();
+		try
+		{
+			//Fetch the requested property
+			String textProperty = driver.findElement(by).getText();
 
-		//Return the text data of a web element
-		return textProperty;
+			//Return the text data of a web element
+			return textProperty;
+		}
+		catch(Exception e)
+		{
+			// TODO : handle exception
+			try
+			{
+				terminateIfWebDriverExecution(e);
+			}
+			catch(Exception e1)
+			{
+				e1.printStackTrace();
+			}
+			return null;
+		}
 	}
 
 	public String getAttribute(By by, String attributeName)
 	{
-		//Fetch the requested property
-		String attribute = driver.findElement(by).getAttribute(attributeName);
-
-		//Return the requested attribute of a web element
-		return attribute;
+		try
+		{
+			//Fetch the requested property
+			String attribute = driver.findElement(by).getAttribute(attributeName);
+			//Return the requested attribute of a web element
+			return attribute;
+		}
+		catch(Exception e)
+		{
+			// TODO : handle exception
+			try 
+			{
+				terminateIfWebDriverExecution(e);
+			} 
+			catch (Exception e1) 
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return null;
+		}
 	}
 
 	public String getText(By by, String css)
 	{
-		//Fetch the requested property
-		String cssValue = driver.findElement(by).getCssValue(css);
-
-		//Return the css value of a web element
-		return cssValue;
+		try
+		{
+			//Fetch the requested property
+			String cssValue = driver.findElement(by).getCssValue(css);
+			//Return the css value of a web element
+			return cssValue;
+		}
+		catch(Exception e)
+		{
+			// TODO : handle exception
+			try
+			{
+				terminateIfWebDriverExecution(e);
+			}
+			catch(Exception e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return null;
+		}
 	}
 
 	public String getTagName(By by)
 	{
-		//Fetch the requested property
-		String tagName = driver.findElement(by).getTagName();
+		try
+		{
+			//Fetch the requested property
+			String tagName = driver.findElement(by).getTagName();
 
-		//Return the tag name data of a web element
-		return tagName;
+			//Return the tag name data of a web element
+			return tagName;
+		}
+		catch(Exception e)
+		{
+			// TODO : handle exception
+			try
+			{
+				terminateIfWebDriverExecution(e);
+			}
+			catch(Exception e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return null;
+		}
 	}
 
 	public boolean cmpString(String validstring1, String validstring2) throws Exception
@@ -2165,6 +2484,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Text Comparision", "Error While Comparing Texts", "NO");
 			e.printStackTrace();
 		}
@@ -2195,6 +2516,8 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Validate Image Size", "Error While Validating Image Size", "NO");
 			e.printStackTrace();
 		}
@@ -2223,10 +2546,12 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Verify Page Is Displayed", "Error while verifying page", "YES");
 			e.printStackTrace();
+			return false;
 		}
-		return false;
 	}
 
 	public String getCurrentDate()
@@ -2267,6 +2592,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Retrieve List Of Values From Drop Down", "Failed to retrieve dorpdown values for " + elementname, "NO");
 			e.printStackTrace();
 		}
@@ -2289,10 +2616,11 @@ public class Keywords extends BaseClass
 		}
 		catch (Exception e)
 		{
+			// TODO : handle exception
 			logResultAndCaptureImage("FAIL", "Validate A Substring In A String", "String "+Parent+ " doesn't contain " +Child+" Substring", "NO");
 			e.printStackTrace();
 		}
-	} 
+	}
 
 	public String randomIdentifier() 
 	{
@@ -2356,6 +2684,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception           
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Verify Page is Displayed Using Page Title ", pageName + "page is not Displayed", "YES");
 			e.printStackTrace();
 		}
@@ -2378,6 +2708,10 @@ public class Keywords extends BaseClass
 		}
 		catch (Exception e)
 		{
+			// TODO : handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
+			logResultAndCaptureImage("FAIL", "Error : Select Value", "Failed To Locate The Element", "YES");
 			e.printStackTrace();
 		}
 	}
@@ -2397,6 +2731,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Extract Atribute Value ", expectedValue+" is not present in element", "YES");			
 			e.printStackTrace();
 		}
@@ -2416,18 +2752,32 @@ public class Keywords extends BaseClass
 		}
 		catch(Exception e)
 		{
+			terminateIfWebDriverExecution(e);
 			//Log
-			logResultAndCaptureImage("PASS", "Launch URL", "Launched URL "+url+ " Successfully" , "YES");
+			logResultAndCaptureImage("FAIL", "Launch URL", "Failed To Launched URL "+url , "YES");
 			e.printStackTrace();
-			//Stop Timer
-			stopWatch();
 		}
 	}
 
-	//Added @12/7/2018
 	public void deleteAllCookie()
 	{
-		driver.manage().deleteAllCookies();
+		try
+		{
+			driver.manage().deleteAllCookies();
+		}
+		catch(Exception e)
+		{
+			// TODO : handle exception
+			try
+			{
+				terminateIfWebDriverExecution(e);
+			}
+			catch(Exception e1)
+			{
+				//Do Nothing
+			}
+			e.printStackTrace();
+		}
 	}
 
 	public void verifyTextFromAlert(String data) throws Exception 
@@ -2451,6 +2801,8 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Text From Alert", "Alert Text Verification Failed", "YES", takeNativeScreenshot());
 			e.printStackTrace();
 		}
@@ -2730,6 +3082,7 @@ public class Keywords extends BaseClass
 			File reportShot = screenshot;
 
 			//Resize the image using Bicubic interpolation to obtain best result and create a copy (X the original size)
+
 			BufferedImage scaledImg = createResizedCopy(dest, X_ImageWidth, Y_ImageHeight , RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 			//Write the modified image back to Screenshot File instance
 			ImageIO.write(scaledImg, "png", screenshot);
@@ -2781,9 +3134,11 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
+			terminateIfWebDriverExecution(e);
+			//Log
 			logResultAndCaptureImage("FAIL", "Capture Element ScreenShot", "Error While Capturing Image", "NO");
 			e.printStackTrace();
+			return null;
 		}
-		return "Nil";
 	}
 }
