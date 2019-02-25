@@ -1,6 +1,8 @@
 # HYB_FW_PDF (Hybrid Framework With PDF Reporting)
 
-![Hybrid Framework](https://raw.githubusercontent.com/suneel944/HYB_FW_PDF/blob/master/hybrid_logo.png)
+<p align="center">
+  <img src="https://github.com/suneel944/HYB_FW_PDF/blob/master/hybrid_logo.png" width="500" title="Hybrid Framework">
+</p>
 
 ## Features
 
