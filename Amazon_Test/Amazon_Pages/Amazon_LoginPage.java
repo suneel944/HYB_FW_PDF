@@ -10,7 +10,7 @@ import baseClassLib.BaseClass;
 
 public class Amazon_LoginPage extends BaseClass
 {
-	Keywords k = new Keywords(this.getClass().getSimpleName());
+	 Keywords k = new Keywords(this.getClass().getSimpleName());
 
 	@BeforeMethod
 	public void beforemethod(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl) 
@@ -18,6 +18,7 @@ public class Amazon_LoginPage extends BaseClass
 		k.startReport(TestCaseName, TestCaseObjective, TestEnvironmentUrl);
 	}
 
+	@SuppressWarnings("static-access")
 	@Test
 	//Amazon Test Script
 	public void amazon_test_001(String url, String browser, String search) throws Exception
