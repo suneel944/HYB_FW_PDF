@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 
 //Java Util Imports
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +33,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 //ImageIO imports
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -149,6 +153,21 @@ public class Keywords extends BaseClass
 	 * Error Step Count
 	 */
 	private static int errorStepCount = 0;
+
+	/**
+	 * Alpha Numeric String
+	 */
+	private static final String LEXICON = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+	/**
+	 * Iterations
+	 */
+	private static final int ITERATIONS = 10000;
+
+	/**
+	 * Key Length
+	 */
+	private static final int KEYLENGTH = 256;
 
 	//*******************************
 	//Date Declarations For Run Summary
@@ -273,7 +292,7 @@ public class Keywords extends BaseClass
 		{
 			try 
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			}
 			catch (Exception e1) 
 			{
@@ -758,7 +777,7 @@ public class Keywords extends BaseClass
 	//******************************************************************************************************************************
 	//******************************************************************************************************************************
 	//******************************************************************************************************************************
-	protected static void terminateIfCriticalExecution(Exception exception) throws Exception
+	protected static void terminateIfCriticalException(Exception exception) throws Exception
 	{
 		try
 		{
@@ -829,7 +848,7 @@ public class Keywords extends BaseClass
 				driver.manage().window().maximize();
 				logResultAndCaptureImage("PASS", "Launch Application", "Executing Script On FireFox", "NO");
 			}
-			//Delete All Cookie - Added @ 12/7/2018
+
 			deleteAllCookie();
 			driver.get(url);
 			logResultAndCaptureImage("PASS", "Launch URL", "Opened URL : "+url, "YES", stopWatch());
@@ -837,7 +856,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Launch Application", "Failed To Launch The Application", "YES");
 			e.printStackTrace();
@@ -863,7 +882,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Input", "Failed To Locate " +elementname+ " Text field.", "YES");
 			e.printStackTrace();
@@ -889,7 +908,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Clear Text", "Failed To Clear " + elementname + " Field.", "YES");
 			e.printStackTrace();
@@ -915,7 +934,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Click Object", "Failed To Click On " + elementname + " Object.", "YES");
 			e.printStackTrace();
@@ -935,7 +954,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Click Object", "Failed To Click On " + elementname + " Element.", "YES");
 			e.printStackTrace();
@@ -959,7 +978,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Element Should Contain", data+" Is Not Present In Element", "YES");
 			e.printStackTrace();
@@ -983,7 +1002,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("PASS", "Element Should Not Contain", data+" Is Not Presents In Element", "YES");
 			e.printStackTrace();
@@ -1010,7 +1029,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Validate Element Is Enabled",  elementname + " Element Is Disabled.", "YES");
 			e.printStackTrace();
@@ -1036,7 +1055,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Element Disabled", elementname + " Element Is Not Disabled", "NO");
 			e.printStackTrace();
@@ -1056,7 +1075,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Scroll Page Down", "Unable To Scroll Page Down", "YES");
 			e.printStackTrace();
@@ -1075,7 +1094,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Scroll Page Up", "Unable To Scroll Page Up", "YES");
 			e.printStackTrace();
@@ -1096,7 +1115,7 @@ public class Keywords extends BaseClass
 		}
 		catch(Exception e)
 		{
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Scroll To View", "Could Not Locate The Element", "NO");
 			e.printStackTrace();
@@ -1113,7 +1132,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Close Browser", "Failed to Close Browser", "YES");
 			e.printStackTrace();
@@ -1130,7 +1149,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Close All Browser", "Failed To Close All Browser", "YES");
 			e.printStackTrace();
@@ -1159,7 +1178,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Confirm Alert Popup", "Either Failed to Accecpt Alert/The Alert window didn't Popup", "YES", takeNativeScreenshot());
 			e.printStackTrace();
@@ -1180,7 +1199,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Dismiss Alert Popup", "Failed To Dismiss Alert", "YES", takeNativeScreenshot());
 			e.printStackTrace();
@@ -1204,7 +1223,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Double Click", " Failed To Locate " + elementname + " Element.", "YES");
 			e.printStackTrace();
@@ -1222,7 +1241,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Refresh Or Reload Page", "Failed to Refresh page", "YES");
 			e.printStackTrace();
@@ -1241,7 +1260,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Navigate Back", "Failed To Navigate To Back Page", "YES");
 			e.printStackTrace();
@@ -1272,7 +1291,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Select Checkbox", "Failed To Locate " +elementname+ " Checkbox", "YES");
 			e.printStackTrace();
@@ -1303,7 +1322,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Unselect Checkbox", " Checkbox Is Already Unselected", "YES");
 			e.printStackTrace();
@@ -1328,7 +1347,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Select By Index From Dropdown", "Failed to select " + elementname + " from the dropdown.", "YES");
 			e.printStackTrace();
@@ -1351,7 +1370,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Select By Text From Dropdown", "Failed to select " + elementname + " from the dropdown.", "YES");
 			e.printStackTrace();
@@ -1375,7 +1394,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Select By Value From Dropdown", "Failed to select " + elementname + " from the dropdown.", "YES");
 			e.printStackTrace();
@@ -1392,7 +1411,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Verify Page Title", "Page Title " +"'"+Text+"'"+ " Does Not Match", "NO");
 			e.printStackTrace();
@@ -1412,7 +1431,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Switch In To Frame By Index", "Failed To Switch In To Frame.", "YES");
 			e.printStackTrace();
@@ -1433,7 +1452,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Switch In To Frame", "Failed To Locate Frame.", "YES");
 			e.printStackTrace();
@@ -1451,7 +1470,7 @@ public class Keywords extends BaseClass
 		{
 			// TODO: handle exception
 			logResultAndCaptureImage("FAIL", "Error : Time Out", "Element Is Not Clickable in the page", "YES");
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			e.printStackTrace();
 		}
@@ -1467,7 +1486,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Time Out", "Element Is Not Visible In The Page", "YES");
 			e.printStackTrace();
@@ -1495,7 +1514,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Click Radio Button", "Failed To Identify " + elementname+ " Radio Button", "YES");
 			e.printStackTrace();
@@ -1522,7 +1541,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Click Radio Button By Value", "Failed To Click " + data + " Radio Button.", "YES");
 			e.printStackTrace();
@@ -1549,7 +1568,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Uncheck All Checkbox", "Failed To Unselect Checkboxes.", "YES");
 			e.printStackTrace();
@@ -1589,7 +1608,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Checkbox Is Not Selected", "Failed To Identify The " +elementname+ " Element", "YES");
 			e.printStackTrace();
@@ -1619,7 +1638,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Checkbox Is Not Selected", "Failed To Identify The " +elementname+ " Element", "YES");
 			e.printStackTrace();
@@ -1649,7 +1668,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log If Required
 			if (!(elementname.equalsIgnoreCase("NO")))
 			{
@@ -1675,7 +1694,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("PASS", "Verify Element Is Not Visible", elementname+ " Element Is Not Visible", "YES");
 			e.printStackTrace();
@@ -1698,7 +1717,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Page Contain Text", "Error While Locating The Text " +text, "YES");
 			e.printStackTrace();
@@ -1726,7 +1745,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Page Contain Image", "Error In Locating " +elementname+ " Image", "YES");	
 			e.printStackTrace();
@@ -1750,7 +1769,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Perform Mouse Hower", "Failed To Mouseover On " +elementname, "NO");
 			e.printStackTrace();
@@ -1777,7 +1796,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Select Menu Through Mouse Hower", "Failed To Select Menu " +elementname+ " Through Mouse Hover", "NO");
 			e.printStackTrace();
@@ -1803,7 +1822,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Send A Keyboard Event", "Failed to Click  the Keyboard.", "NO");
 			e.printStackTrace();
@@ -1827,7 +1846,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Compare Header Count", "Failed To Get Header Count", "YES");
 			e.printStackTrace();
@@ -1855,7 +1874,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Verify Table Existence", "Failed To Find Table", "YES");
 			e.printStackTrace();	
@@ -1894,7 +1913,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Verify Link Existence", elementname+ " Link " +" Does Not Exist", "YES");
 			e.printStackTrace();
@@ -1928,7 +1947,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Table Should Contain", "Failed To Find "+ "'"+ data+"'" +" In Table", "YES");
 			e.printStackTrace();	
@@ -1962,7 +1981,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("PASS", "Table Should Not Contain", "Failed to find "+"'" +data+"'"+ " In Table", "YES");
 			e.printStackTrace();
@@ -1997,7 +2016,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Click Link", link+" Link Not Found In Table", "YES");
 			e.printStackTrace();	
@@ -2024,7 +2043,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error", "Failed To Load Page With Title : " + url, "YES");
 			e.printStackTrace();
@@ -2048,7 +2067,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error", "Failed To Locate The Object", "YES");
 			return e1.isDisplayed();
@@ -2091,7 +2110,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Page Is Displayed", "Failed As " + pageName + " Page Could Not Be Located", "YES");
 			e.printStackTrace();
@@ -2116,7 +2135,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error", title + "page is not Displayed", "YES");
 			e.printStackTrace();
@@ -2139,7 +2158,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Content Validation", "'"+data+ "'"+ " Is Not Present In Element", "YES");
 			e.printStackTrace();
@@ -2178,7 +2197,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Switch Tabs", "Unable To Switch To The Preceding Window", "YES");
 			e.printStackTrace();
@@ -2198,7 +2217,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Switch Tabs", "Unable To Switch To " +tabIndex+ " tab", "YES");
 			e.printStackTrace();			
@@ -2237,7 +2256,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Switch Tabs", "Unable To Switch To The Succeeding Window", "YES");
 			e.printStackTrace();
@@ -2255,7 +2274,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Switch To Tab", "Unable To Switch To The Default Window", "YES");
 			e.printStackTrace();
@@ -2271,7 +2290,7 @@ public class Keywords extends BaseClass
 		catch(Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Refresh Page", "Failed To Refresh Page", "YES");
 			e.printStackTrace();
@@ -2287,7 +2306,7 @@ public class Keywords extends BaseClass
 		catch(Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Fetch Current URL", "Failed To Fetch Current URL", "NO");
 		}
@@ -2315,7 +2334,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			e.printStackTrace();
 		}
 	}
@@ -2350,7 +2369,7 @@ public class Keywords extends BaseClass
 			// TODO: handle exception
 			try 
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			} 
 			catch (Exception e1) 
 			{
@@ -2379,7 +2398,7 @@ public class Keywords extends BaseClass
 			// TODO: handle exception
 			try 
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			} 
 			catch (Exception e1) 
 			{
@@ -2399,7 +2418,7 @@ public class Keywords extends BaseClass
 		catch(Exception e)
 		{
 			// TODO : handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			e.printStackTrace();
 		}
 		return null;
@@ -2424,7 +2443,7 @@ public class Keywords extends BaseClass
 		catch(Exception e)
 		{
 			// TODO : handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			e.printStackTrace();
 			return 0;
 		}
@@ -2457,7 +2476,7 @@ public class Keywords extends BaseClass
 			// TODO : handle exception
 			try
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			}
 			catch(Exception e1)
 			{
@@ -2481,7 +2500,7 @@ public class Keywords extends BaseClass
 			// TODO : handle exception
 			try 
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			} 
 			catch (Exception e1) 
 			{
@@ -2506,7 +2525,7 @@ public class Keywords extends BaseClass
 			// TODO : handle exception
 			try
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			}
 			catch(Exception e1)
 			{
@@ -2532,7 +2551,7 @@ public class Keywords extends BaseClass
 			// TODO : handle exception
 			try
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			}
 			catch(Exception e1)
 			{
@@ -2563,7 +2582,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Text Comparision", "Error While Comparing Texts", "NO");
 			e.printStackTrace();
@@ -2595,7 +2614,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Validate Image Size", "Error While Validating Image Size", "NO");
 			e.printStackTrace();
@@ -2625,7 +2644,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Verify Page Is Displayed", "Error while verifying page", "YES");
 			e.printStackTrace();
@@ -2671,7 +2690,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Retrieve List Of Values From Drop Down", "Failed to retrieve dorpdown values for " + elementname, "NO");
 			e.printStackTrace();
@@ -2701,21 +2720,20 @@ public class Keywords extends BaseClass
 		}
 	}
 
-	public String randomIdentifier() 
+	public static String randomIdentifier(int randomNum) 
 	{
-		final String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
 		final java.util.Random rand = new java.util.Random();
 		// consider using a Map<String,Boolean> to say whether the identifier is being used or not 
 		final Set<String> identifiers = new HashSet<String>();
 		StringBuilder builder = new StringBuilder();
-		while(builder.toString().length() == 0) 
+		while(builder.toString().length() == 0)
 		{
-			int length = rand.nextInt(5)+5;
+			int length = rand.nextInt(randomNum)+5;
 			for(int i = 0; i < length; i++) 
 			{
-				builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
+				builder.append(LEXICON.charAt(rand.nextInt(LEXICON.length())));
 			}
-			if(identifiers.contains(builder.toString())) 
+			if(identifiers.contains(builder.toString()))
 			{
 				builder = new StringBuilder();
 			}
@@ -2763,7 +2781,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception           
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Verify Page is Displayed Using Page Title ", pageName + "page is not Displayed", "YES");
 			e.printStackTrace();
@@ -2788,7 +2806,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO : handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Select Value", "Failed To Locate The Element", "YES");
 			e.printStackTrace();
@@ -2810,7 +2828,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Extract Atribute Value ", expectedValue+" is not present in element", "YES");			
 			e.printStackTrace();
@@ -2831,7 +2849,7 @@ public class Keywords extends BaseClass
 		}
 		catch(Exception e)
 		{
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Launch URL", "Failed To Launched URL "+url , "YES");
 			e.printStackTrace();
@@ -2849,7 +2867,7 @@ public class Keywords extends BaseClass
 			// TODO : handle exception
 			try
 			{
-				terminateIfCriticalExecution(e);
+				terminateIfCriticalException(e);
 			}
 			catch(Exception e1)
 			{
@@ -2880,7 +2898,7 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Error : Verify Text From Alert", "Alert Text Verification Failed", "YES", takeNativeScreenshot());
 			e.printStackTrace();
@@ -3213,7 +3231,7 @@ public class Keywords extends BaseClass
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			terminateIfCriticalExecution(e);
+			terminateIfCriticalException(e);
 			//Log
 			logResultAndCaptureImage("FAIL", "Capture Element ScreenShot", "Error While Capturing Image", "NO");
 			e.printStackTrace();
@@ -3242,6 +3260,34 @@ public class Keywords extends BaseClass
 		catch (Exception e) 
 		{
 			System.exit(-1);
+		}
+	}
+
+	public static String encryptPassword(String password)
+	{
+		try
+		{
+			//Generate Salt
+			String salt = randomIdentifier(60);
+
+			//Generate Hash
+			PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEYLENGTH);
+			Arrays.fill(password.toCharArray(), Character.MIN_VALUE);
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+			//Generate Secure Password
+			byte[] intmPassword = skf.generateSecret(spec).getEncoded();
+			String encryptedPassword = Base64.getEncoder().encodeToString(intmPassword);
+
+			//Clear spec
+			spec.clearPassword();
+
+			return encryptedPassword;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
 		}
 	}
 }
