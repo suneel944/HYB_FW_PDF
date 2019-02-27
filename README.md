@@ -39,4 +39,5 @@ A big thanks to GitHub and all of HYB_FW_PDF contributors.
 
 ## Upcoming Features
 
-1. PDF reporting to support batch run
+1. "opencv" implementation
+2. PDF reporting to support batch run
