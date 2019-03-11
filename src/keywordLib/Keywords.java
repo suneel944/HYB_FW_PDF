@@ -485,21 +485,24 @@ public class Keywords extends BaseClass
 
 				//Add a new page/ page break
 				document.newPage();
-				
-				//Add a line separator
-				document.add(new LineSeparator(0.8f, 100,BaseColor.RED, 0, -5));
 
-				//Iteration Heading
-				Chunk itrHeading = new Chunk("Iteration : "+itr, blackTimes);
-				Paragraph pItr = new Paragraph(itrHeading);
-				pItr.setAlignment(Paragraph.ALIGN_CENTER);
-				document.add(pItr);
+				if(actualIterationCount > 1)
+				{
+					//Add a line separator
+					document.add(new LineSeparator(0.8f, 100,BaseColor.RED, 0, -5));
 
-				//Add a line separator
-				document.add(new LineSeparator(0.8f, 100, BaseColor.RED, 0, -5));
+					//Iteration Heading
+					Chunk itrHeading = new Chunk("Iteration : "+itr, blackTimes);
+					Paragraph pItr = new Paragraph(itrHeading);
+					pItr.setAlignment(Paragraph.ALIGN_CENTER);
+					document.add(pItr);
 
-				//Add a dummy line
-				document.add(new Paragraph("\n"));
+					//Add a line separator
+					document.add(new LineSeparator(0.8f, 100, BaseColor.RED, 0, -5));
+
+					//Add a dummy line
+					document.add(new Paragraph("\n"));
+				}
 
 				//Set flag to true
 				initialFlag = true;
