@@ -135,11 +135,6 @@ public class Keywords extends BaseClass
 	static PdfPCell cell;
 
 	/**
-	 * Overal Run Result
-	 */
-	private static boolean overalRunResultFlag = false;
-
-	/**
 	 * Passed Step Count
 	 */
 	private static int passStepCount = 0;
@@ -155,20 +150,72 @@ public class Keywords extends BaseClass
 	private static int errorStepCount = 0;
 
 	/**
+	 * Iteration Passed Step Count
+	 */
+	private static int iterationPassedStepCount = 0;
+
+	/**
+	 * Iteration Failed Step Count
+	 */
+	private static int iterationFailedStepCount = 0;
+
+	/**
+	 * Iteration Counter For Summary
+	 */
+	private static int itr = 1;
+
+	/**
+	 * Iteration Constant
+	 */
+	private static final int ITERATIONS = 1000;
+
+	/**
 	 * Alpha Numeric String
 	 */
 	private static final String LEXICON = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-	/**
-	 * Iterations
-	 */
-	private static final int ITERATIONS = 10000;
 
 	/**
 	 * Key Length
 	 */
 	private static final int KEYLENGTH = 256;
 
+	/**
+	 * Iteration Count
+	 */
+	private static int iteration;
+
+	/**
+	 * Initial Flag
+	 */
+	private static boolean initialFlag = false;
+	
+	/**
+	 * Iterate Flag
+	 */
+	private static boolean iterateFlag = false;
+	
+	/**
+	 * Overal Run Result Flag
+	 */
+	private static boolean overalRunResultFlag = false;
+
+	/**
+	 * Iteration Run Result Flag
+	 */
+	private static boolean iterationRunResultFlag = false;
+	
+	//*******************************
+	//Font Declarations
+	//*******************************
+	private static Font blackTimes = new Font(FontFamily.HELVETICA, 16, Font.BOLD, BaseColor.BLACK);
+	private static Font blackTimesNormal = new Font(FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
+	private static Font blackTimesBold = new Font(FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
+	private static Font redTimesBold = new Font(FontFamily.HELVETICA, 10, Font.BOLD, new BaseColor(231, 76, 60));
+	private static Font redTimesNormal = new Font(FontFamily.HELVETICA, 10, Font.NORMAL, new BaseColor(231, 76, 60));
+	private static Font blackTimesDefaultSize = new Font(FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD, BaseColor.BLACK);
+	private static Font greenResult = new Font(FontFamily.HELVETICA, 14, Font.BOLD, new BaseColor(39, 174, 96));
+	private static Font redResult = new Font(FontFamily.HELVETICA, 14, Font.BOLD, new BaseColor(231, 76, 60));
+	
 	//*******************************
 	//Date Declarations For Run Summary
 	//*******************************
@@ -315,9 +362,8 @@ public class Keywords extends BaseClass
 	//Start Report
 	//******************************************************************************************************************************
 
-	public void startReport(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl)
+	public void startReport(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl, String...kwargs)
 	{	
-
 		Keywords.TestCaseName = TestCaseName;
 		pageLoad.reset();
 		pageLoad.start();
@@ -347,73 +393,131 @@ public class Keywords extends BaseClass
 		{
 			FILE.mkdir();
 		}
+
 		try
 		{
-			document = new Document(PageSize.A4);
-			writer = PdfWriter.getInstance(document, new FileOutputStream(new File(dateFolder+"\\"+ClassName+"\\"+Keywords.TestCaseName+ "_" + date1[1] + date1[2] + dateval +".pdf")));
-			document.open();
-
-			//***************************************************************************************************************************
-			//Main Heading
-			//***************************************************************************************************************************
-			//Test Report Name
-
-			//Add a line separator
-			document.add(new LineSeparator(1f, 100, null, 0, -5));
-
-			//Add Main Heading
-			Font blackTimes = new Font(FontFamily.HELVETICA, 15, Font.BOLD, BaseColor.BLACK);
-			Chunk mainHeading = new Chunk(TestCaseName, blackTimes);
-			Paragraph p = new Paragraph(mainHeading);
-			p.setAlignment(Paragraph.ALIGN_CENTER);
-			document.add(p);
-
-			//Add a line separator
-			document.add(new LineSeparator(1f, 100, null, 0, -5));
-
-			//Add a dummy line
-			document.add(new Paragraph("\n"));
-
-			//***************************************************************************************************************************
-			//Test Case Details
-			//***************************************************************************************************************************
-			//Test case Name
-			document.add(new Paragraph("Testcase Name : " +TestCaseName, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
-
-			//Test Objective
-			document.add(new Paragraph("Test Objective : " +TestCaseObjective, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
-
-			//Test Environment
-			document.add(new Paragraph("Test Environment : " +TestEnvironmentUrl, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
-
-			//Java Version
-			document.add(new Paragraph("Java Version : " +System.getProperty("java.version"), new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
-
-			//Host Name
-			document.add(new Paragraph("Host Name : " +InetAddress.getLocalHost().getHostName(), new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
-
-			//Operating System
-			document.add(new Paragraph("Operating System : " +System.getProperty("os.name"), new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
-
-			//Add a dummy line
-			document.add(new Paragraph("\n"));
-
-			//Add a line separator
-			document.add(new LineSeparator(0.5f, 100, null, 0, -5));
-
-			Image reportLogo = Image.getInstance(currentDir+"\\hybrid_logo.png");
-			//If image size exceeds a threshold value decrease it to below size
-			if ((reportLogo.getWidth()>525.00) | (reportLogo.getHeight()>500.00))
+			if (initialFlag == false)
 			{
-				reportLogo.scaleToFit(500, 600);
-				reportLogo.setAlignment(Element.ALIGN_CENTER);
+				if(kwargs.length==1)
+				{
+					//Setting the count for internal purpose
+					iteration = Integer.parseInt(kwargs[0]);
+
+					//Set iterationFlag to true
+					iterateFlag = true;
+				}
+				
+				//Create pdf instance
+				document = new Document(PageSize.A4);
+				writer = PdfWriter.getInstance(document, new FileOutputStream(new File(dateFolder+"\\"+ClassName+"\\"+Keywords.TestCaseName+ "_" + date1[1] + date1[2] + dateval +".pdf")));
+				document.open();
+
+				//***************************************************************************************************************************
+				//Main Heading
+				//***************************************************************************************************************************
+				//Test Report Name
+
+				//Add a line separator
+				document.add(new LineSeparator(1f, 100, null, 0, -5));
+
+				//Add Main Heading
+				Font blackTimes = new Font(FontFamily.HELVETICA, 15, Font.BOLD, BaseColor.BLACK);
+				Chunk mainHeading = new Chunk(TestCaseName, blackTimes);
+				Paragraph p = new Paragraph(mainHeading);
+				p.setAlignment(Paragraph.ALIGN_CENTER);
+				document.add(p);
+
+				//Add a line separator
+				document.add(new LineSeparator(1f, 100, null, 0, -5));
+
+				//Add a dummy line
+				document.add(new Paragraph("\n"));
+
+				//***************************************************************************************************************************
+				//Test Case Details
+				//***************************************************************************************************************************
+				//Test case Name
+				document.add(new Paragraph("Testcase Name : " +TestCaseName, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+				//Test Objective
+				document.add(new Paragraph("Test Objective : " +TestCaseObjective, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+				//Test Environment
+				document.add(new Paragraph("Test Environment : " +TestEnvironmentUrl, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+				//Java Version
+				document.add(new Paragraph("Java Version : " +System.getProperty("java.version"), new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+				//Host Name
+				document.add(new Paragraph("Host Name : " +InetAddress.getLocalHost().getHostName(), new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+				//Operating System
+				document.add(new Paragraph("Operating System : " +System.getProperty("os.name"), new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+				//Add a dummy line
+				document.add(new Paragraph("\n"));
+
+				//Add a line separator
+				document.add(new LineSeparator(0.5f, 100, null, 0, -5));
+
+				Image reportLogo = Image.getInstance(currentDir+"\\hybrid_logo.png");
+				//If image size exceeds a threshold value decrease it to below size
+				if ((reportLogo.getWidth()>525.00) | (reportLogo.getHeight()>500.00))
+				{
+					reportLogo.scaleToFit(500, 600);
+					reportLogo.setAlignment(Element.ALIGN_CENTER);
+				}
+
+				//Add DXC Logo
+				document.add(reportLogo);
+
+				//Add a new page/ page break
+				document.newPage();
+				
+				//Add a line separator
+				document.add(new LineSeparator(0.8f, 100,BaseColor.RED, 0, -5));
+
+				//Iteration Heading
+				Chunk itrHeading = new Chunk("Iteration : "+itr, blackTimes);
+				Paragraph pItr = new Paragraph(itrHeading);
+				pItr.setAlignment(Paragraph.ALIGN_CENTER);
+				document.add(pItr);
+
+				//Add a line separator
+				document.add(new LineSeparator(0.8f, 100, BaseColor.RED, 0, -5));
+
+				//Add a dummy line
+				document.add(new Paragraph("\n"));
+
+				//Set flag to true
+				initialFlag = true;
 			}
+			else
+			{
+				//Initiate the iteration constants if kwargs length is > 1
+				iterationPassedStepCount = 0;
+				iterationFailedStepCount = 0;
 
-			//Add DXC Logo
-			document.add(reportLogo);
+				//Add a new page
+				document.newPage();
 
-			//Add a new page/ page break
-			document.newPage();
+				//Add a line separator
+				document.add(new LineSeparator(0.8f, 100, BaseColor.RED, 0, -5));
+
+				//Iteration Heading
+				Font blackTimes = new Font(FontFamily.HELVETICA, 15, Font.BOLD, BaseColor.BLACK);
+
+				Chunk mainHeading = new Chunk("Iteration : "+itr, blackTimes);
+				Paragraph p = new Paragraph(mainHeading);
+				p.setAlignment(Paragraph.ALIGN_CENTER);
+				document.add(p);
+
+				//Add a line separator
+				document.add(new LineSeparator(0.8f, 100, BaseColor.RED, 0, -5));
+
+				//Add a dummy line
+				document.add(new Paragraph("\n"));
+			}
 		}
 		catch (Exception e)
 		{
@@ -432,11 +536,6 @@ public class Keywords extends BaseClass
 		//***************************************************************************************************************************
 		try
 		{
-			Font blackTimesNormal = new Font(FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
-			Font blackTimesBold = new Font(FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
-			Font redTimesBold = new Font(FontFamily.HELVETICA, 10, Font.BOLD, new BaseColor(231, 76, 60));
-			Font redTimesNormal = new Font(FontFamily.HELVETICA, 10, Font.NORMAL, new BaseColor(231, 76, 60));
-
 			statusTable = new PdfPTable(new float[]{.5f, .5f, .2f, .6f});
 			Chunk stepDetails =null;
 			if(Status.equalsIgnoreCase("ERROR"))
@@ -524,7 +623,8 @@ public class Keywords extends BaseClass
 				statusTable.addCell(cell);
 
 				//Increment pass step count
-				passStepCount+=1;
+				passStepCount++;
+				iterationPassedStepCount++;
 			}
 			else if (Status.equalsIgnoreCase("Fail")|(Status.equalsIgnoreCase("ERROR")))
 			{
@@ -533,17 +633,22 @@ public class Keywords extends BaseClass
 				cell = new PdfPCell(new Paragraph(redStatus));
 				statusTable.addCell(cell);
 
+				if(iteration > 1)
+				{
+					iterationRunResultFlag = true;
+				}
 				//Change the result flag to "True"
 				overalRunResultFlag = true;
 
 				//Increment fail step count
 				if(!(Status.equalsIgnoreCase("ERROR")))
 				{
-					failStepCount+=1;
+					failStepCount++;
+					iterationFailedStepCount++;
 				}
 				else
 				{
-					errorStepCount+=1;
+					errorStepCount++;
 				}
 			}
 
@@ -654,11 +759,35 @@ public class Keywords extends BaseClass
 	//******************************************************************************************************************************
 	//End Report
 	//******************************************************************************************************************************
-	@SuppressWarnings("deprecation")
 	public static void endReport()
 	{
+		try
+		{		
+			//Add Iteration Summary
+			if(iterateFlag==true)
+			{
+				iterationSummary();
+				
+			}
+			else
+			{
+				runSummary();
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static void runSummary()
+	{
+		
+		//Add a new page
+		document.newPage();
+		
 		java.util.Date runEndTimeStamp = new java.util.Date();
-
 		//Stop Timer
 		pageLoad.stop();
 
@@ -666,7 +795,7 @@ public class Keywords extends BaseClass
 		//Result String
 		String runResult;
 		//Validate run result flag
-		if(overalRunResultFlag==true)
+		if(overalRunResultFlag == true)
 		{
 			//Set Run result to FAIL
 			runResult = "FAIL";
@@ -677,26 +806,17 @@ public class Keywords extends BaseClass
 			runResult = "PASS";
 		}
 
-
 		//*********************************************************************
 
 		try
 		{	
-			//Add a new page
-			document.newPage();
-
 			//*****************************************************************
 			//Test Summary
 			//*****************************************************************
 			//Add a line separator
 			document.add(new LineSeparator(1f, 100, null, 0, -5));
 
-
-			Font blackTimes = new Font(FontFamily.HELVETICA, 16, Font.BOLD, BaseColor.BLACK);
-			Font greenResult = new Font(FontFamily.HELVETICA, 14, Font.BOLD, new BaseColor(39, 174, 96));
-			Font redResult = new Font(FontFamily.HELVETICA, 14, Font.BOLD, new BaseColor(231, 76, 60));
-			Font blackTimesDefaultSize = new Font(FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD, BaseColor.BLACK);
-
+			//Add run summary
 			Chunk summaryHeading = new Chunk("Run Summary", blackTimes);
 			Paragraph p = new Paragraph(summaryHeading);
 			p.setAlignment(Paragraph.ALIGN_CENTER);
@@ -770,6 +890,92 @@ public class Keywords extends BaseClass
 		}
 	}
 
+	private static void iterationSummary()
+	{
+		try
+		{
+			//Add a new page
+			document.newPage();
+
+			//Check whether it is single iteration or multiple iteration and then proceed
+			//Provide mini summary
+			//Add a line separator
+			document.add(new LineSeparator(1f, 100, null, 0, -5));
+
+			//Add iteration summary
+			Chunk summaryHeading = new Chunk("Iteration Summary", blackTimes);
+			Paragraph p = new Paragraph(summaryHeading);
+			p.setAlignment(Paragraph.ALIGN_CENTER);
+			document.add(p);
+
+			//Add a line separator
+			document.add(new LineSeparator(1f, 100, null, 0, -5));
+
+			//Add a dummy line
+			document.add(new Paragraph("\n"));
+
+			//*********************************************************************
+			//Iteration Result
+			String iterationResult;
+
+			//Validate iteration result flag
+			if(iterationRunResultFlag == true)
+			{
+				//Set Run result to FAIL
+				iterationResult = "FAIL";
+			}
+			else
+			{
+				//Set Run result to PASS
+				iterationResult = "PASS";
+			}
+
+			//*********************************************************************
+
+			//Iteration Status
+			Chunk itrResult = new Chunk("Iteration "+itr+ " Result : ", blackTimesDefaultSize);
+			itr++;
+			Phrase p1 = new Phrase(itrResult);
+			if (iterationResult.equalsIgnoreCase("PASS"))
+			{
+				Chunk iterationresult = new Chunk(iterationResult, greenResult);
+				p1.add(iterationresult);
+				Paragraph p8 = new Paragraph();
+				p8.add(p1);
+				document.add(p8);
+			}
+			else
+			{
+				Chunk iterationresult = new Chunk(iterationResult, redResult);
+				p1.add(iterationresult);
+				Paragraph p8 = new Paragraph();
+				p8.add(p1);
+				document.add(p8);
+			}
+
+			//Iteration Passed Steps
+			document.add(new Paragraph("Iteration Steps Passed : " +iterationPassedStepCount, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+			//Iteration Failed Steps
+			document.add(new Paragraph("Iteration Steps Failed : " +iterationFailedStepCount, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+			//Add a dummy page
+			document.newPage();
+
+			//decrement the iterator
+			iteration--;
+			if (iteration==0)
+			{
+				//Add run summary and close the pdf
+				runSummary();
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	//******************************************************************************************************************************
 	//******************************************************************************************************************************
 	//******************************************************************************************************************************
@@ -779,11 +985,13 @@ public class Keywords extends BaseClass
 	//******************************************************************************************************************************
 	protected static void terminateIfCriticalException(Exception exception) throws Exception
 	{
+		overalRunResultFlag = true;
 		try
 		{
 			if(exception.toString().contains("WebDriverException"))
 			{
 				//Log
+				System.out.println(exception.toString());
 				logResultAndCaptureImage("ERROR", "Fatal Error", exception.toString(), "NO");
 			}
 
@@ -806,7 +1014,7 @@ public class Keywords extends BaseClass
 		finally
 		{
 			//End Report
-			endReport();
+			runSummary();
 
 			//Print The Below Statement To Attract User Attention
 			System.err.println("**********!!!EXCEPTION OCCURED!!!************");
@@ -820,7 +1028,7 @@ public class Keywords extends BaseClass
 
 	}
 
-	public void launchApplication(String browserName, String url) throws Exception 
+	public boolean launchApplication(String browserName, String url) throws Exception 
 	{
 		// Launch Browser
 		try 
@@ -852,6 +1060,7 @@ public class Keywords extends BaseClass
 			deleteAllCookie();
 			driver.get(url);
 			logResultAndCaptureImage("PASS", "Launch URL", "Opened URL : "+url, "YES", stopWatch());
+			return true;
 		}
 		catch (Exception e) 
 		{
@@ -860,6 +1069,7 @@ public class Keywords extends BaseClass
 			//Log
 			logResultAndCaptureImage("FAIL", "Launch Application", "Failed To Launch The Application", "YES");
 			e.printStackTrace();
+			return false;
 		}
 	}
 
