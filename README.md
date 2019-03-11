@@ -6,10 +6,12 @@
 
 ## Features
 
-1. No Library configuration requried
-2. Outputs beautiful pdf report with screenshots
-3. Consists of wide range of keywords which are essentials for testing platform
-4. Monolithic project structure : Contains libraries, Test data files, output reports everything in one workspace.
+* No Library configuration requried
+* Outputs beautiful pdf report with screenshots
+  * Supports multiple iteration execution
+* Consists of wide range of keywords which are essentials for testing platform
+* Monolithic project structure : Contains libraries, Test data files, output reports everything in one workspace.
+* Supports result writeback to spreadsheet
 
 ## Background
 
