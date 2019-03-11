@@ -160,6 +160,11 @@ public class Keywords extends BaseClass
 	private static int iterationFailedStepCount = 0;
 
 	/**
+	 * Actual Execution Iteration Count
+	 */
+	private static int actualIterationCount = 0;
+	
+	/**
 	 * Iteration Counter For Summary
 	 */
 	private static int itr = 1;
@@ -362,6 +367,12 @@ public class Keywords extends BaseClass
 	//Start Report
 	//******************************************************************************************************************************
 
+	/**
+	 * @param TestCaseName - Provide test case name
+	 * @param TestCaseObjective - Provide objective of test case
+	 * @param TestEnvironmentUrl - Provide the environment url in which execution is being performed
+	 * @param kwargs - Pass iteration count, if multiple iteration is required
+	 */
 	public void startReport(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl, String...kwargs)
 	{	
 		Keywords.TestCaseName = TestCaseName;
@@ -402,6 +413,7 @@ public class Keywords extends BaseClass
 				{
 					//Setting the count for internal purpose
 					iteration = Integer.parseInt(kwargs[0]);
+					actualIterationCount = Integer.parseInt(kwargs[0]);
 
 					//Set iterationFlag to true
 					iterateFlag = true;
@@ -524,7 +536,18 @@ public class Keywords extends BaseClass
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param Status - PASS/FAIL/ERROR
+	 * @param StepName - Step name
+	 * @param StepDescription - A brief description about Step action
+	 * @param screenCapture - Provide "YES"/"NO"
+	 * @param args - Provide custom Image path which needs to be added to report
+	 * @throws DocumentException
+	 * @throws MalformedURLException
+	 * @throws Exception
+	 */
 	@SuppressWarnings("deprecation")
 	public static void logResultAndCaptureImage(String Status, String StepName, String StepDescription, String screenCapture, String ...args) 
 			throws DocumentException, MalformedURLException, Exception
@@ -633,7 +656,7 @@ public class Keywords extends BaseClass
 				cell = new PdfPCell(new Paragraph(redStatus));
 				statusTable.addCell(cell);
 
-				if(iteration > 1)
+				if(actualIterationCount > 1)
 				{
 					iterationRunResultFlag = true;
 				}
@@ -1010,9 +1033,19 @@ public class Keywords extends BaseClass
 				//Log
 				logResultAndCaptureImage("ERROR", "Error : Illegal Index", "An Array Has Been Accessed With An Illegal Index", "NO");
 			}
+			else if(exception.toString().contains("NoSuchWindowException"))
+			{
+				//Log
+				logResultAndCaptureImage("Error", "Error : Abrupt Chrome Application Closure", exception.toString(), "NO");
+			}
 		}
 		finally
 		{
+			//Iteration Summay
+			if(actualIterationCount > 1)
+			{
+				iterationSummary();
+			}
 			//End Report
 			runSummary();
 
@@ -1021,7 +1054,10 @@ public class Keywords extends BaseClass
 			System.out.println("***********Terminated Execution**************");
 			System.out.println("Report Has been Generated!!!");
 			System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-
+			
+			//Quit Driver
+			driver.quit();
+			
 			//Exit Execution
 			System.exit(1);
 		}
