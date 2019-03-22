@@ -24,7 +24,7 @@ Framework is built in : [Eclipse Neon IDE (For Java Developers)](https://www.ecl
 
 ## Requirements
 
-1. [JDK 1.8.0_191 or Higher](https://download.oracle.com/otn-pub/java/jdk/8u201-b09/42970487e3af4f5aa5bca3f542482c60/jdk-8u201-windows-x64.exe)
+1. [JDK 1.8.0_191 or Higher](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 2. [Eclipse Neon or Higher](https://www.eclipse.org/downloads/packages/release)
 
 ## Contributing
