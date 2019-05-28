@@ -375,6 +375,7 @@ public class Keywords extends BaseClass
 	//******************************************************************************************************************************
 
 	/**
+	 * startTestReport - Initiates The PDF Test Report
 	 * @param TestCaseName - Provide Test Case Name
 	 * @param TestCaseObjective - Provide Test Case Objective
 	 * @param TestEnvironmentUrl - Provide the Test Environment URL
@@ -3509,7 +3510,7 @@ public class Keywords extends BaseClass
 		}
 	}
 
-	
+
 	private BufferedImage gridImage;	
 	/**
 	 * saveAsPngImage - Save An Image In ".png" Format After Increasing The DPI Of The Image
@@ -3547,7 +3548,7 @@ public class Keywords extends BaseClass
 			break;
 		}
 	}
-	
+
 	/**
 	 * setDPI - Set DPI For Image Meta Data If It Is Not Set
 	 * @param metadata
@@ -3752,8 +3753,8 @@ public class Keywords extends BaseClass
 		}
 	}
 
-	// Extract Images From Document
 	/**
+	 * extractImagesFromDoc - Extract Images From Document
 	 * @param docx - Document Path (".docx" extension)
 	 * @throws Exception
 	 */
@@ -3788,7 +3789,6 @@ public class Keywords extends BaseClass
 		}
 	}
 
-	//Encrypt Password
 	/**
 	 * encryptPassword - Encrypts Incoming Password Using Base64
 	 * @param password - Provide Password Which Needs To Be Encrypted
@@ -3823,7 +3823,6 @@ public class Keywords extends BaseClass
 		}
 	}
 
-	//Drag And Drop
 	/**
 	 * dragAndDrop - Perform Drag And Drop Opeation Using Action Chains
 	 * @param from - Source Locator Address (Xpath, CSS, ID, Class Name..etc)
