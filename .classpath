@@ -3,72 +3,51 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="Amazon_Test"/>
 	<classpathentry kind="src" path="example_Test"/>
+	<classpathentry kind="src" path="openCV_test"/>
+	<classpathentry kind="src" path="Trail_Test"/>
 	<classpathentry kind="lib" path="lib/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/ant-launcher-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/bcprov-jdk16-1.46.jar"/>
 	<classpathentry kind="lib" path="lib/bsh-2.0b4.jar"/>
-	<classpathentry kind="lib" path="lib/bson-3.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/bson-3.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-1.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.9.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections4-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/curvesapi-1.03.jar"/>
 	<classpathentry kind="lib" path="lib/curvesapi-1.04.jar"/>
-	<classpathentry kind="lib" path="lib/extentreports-2.41.2.jar"/>
-	<classpathentry kind="lib" path="lib/flying-saucer-core-9.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/flying-saucer-pdf-itext5-9.1.6.jar"/>
 	<classpathentry kind="lib" path="lib/fontbox-2.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/freemarker-2.3.23.jar"/>
 	<classpathentry kind="lib" path="lib/ghost4j-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4-sources.jar"/>
-	<classpathentry kind="lib" path="lib/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/handlebars-4.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/itext-2.1.7.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/IU.jar"/>
 	<classpathentry kind="lib" path="lib/jackcess-2.1.6.jar"/>
 	<classpathentry kind="lib" path="lib/jackcess-encrypt-2.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.9.4.jar"/>
 	<classpathentry kind="lib" path="lib/jai-imageio-core-1.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/java-client-6.1.0-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/java-client-6.1.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/java-client-6.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jbig2-imageio-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-vfs-3.2.12.Final.jar"/>
 	<classpathentry kind="lib" path="lib/jcl-over-slf4j-1.7.25.jar"/>
 	<classpathentry kind="lib" path="lib/jcommander-1.48.jar"/>
-	<classpathentry kind="lib" path="lib/jconn3.jar"/>
 	<classpathentry kind="lib" path="lib/jide-oss-3.5.7.jar"/>
 	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jsoup-1.8.3.jar"/>
 	<classpathentry kind="lib" path="lib/jsoup-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/jtidy-r938.jar"/>
 	<classpathentry kind="lib" path="lib/jul-to-slf4j-1.7.25.jar"/>
-	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
 	<classpathentry kind="lib" path="lib/jxl-2.6.12.jar"/>
 	<classpathentry kind="lib" path="lib/lept4j-1.6.4.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-over-slf4j-1.7.25.jar"/>
 	<classpathentry kind="lib" path="lib/logback-classic-1.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/logback-core-1.2.3.jar"/>
-	<classpathentry kind="lib" path="lib/mongodb-driver-3.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/mongodb-driver-3.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/mongodb-driver-core-3.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/mongodb-driver-core-3.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.41.jar"/>
 	<classpathentry kind="lib" path="lib/ojdbc6.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.swt-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/pdfbox-2.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/pdfbox-tools-2.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.16.jar"/>
@@ -77,13 +56,9 @@
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.16.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.16.jar"/>
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.16.jar"/>
-	<classpathentry kind="lib" path="lib/reportium-java-1.2.7.jar"/>
-	<classpathentry kind="lib" path="lib/sel_connect.exe"/>
-	<classpathentry kind="lib" path="lib/sel_connect.jar"/>
 	<classpathentry kind="lib" path="lib/selenium-server-standalone-3.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/sikuli-script.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.25.jar"/>
-	<classpathentry kind="lib" path="lib/snakeyaml-1.15.jar"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.8.11.1.jar"/>
 	<classpathentry kind="lib" path="lib/swing2swt.jar"/>
 	<classpathentry kind="lib" path="lib/swingx-all-1.6.4.jar"/>
@@ -91,10 +66,22 @@
 	<classpathentry kind="lib" path="lib/swt.jar"/>
 	<classpathentry kind="lib" path="lib/tess4j-3.4.8.jar"/>
 	<classpathentry kind="lib" path="lib/testng-6.9.9.jar"/>
-	<classpathentry kind="lib" path="lib/thymeleaf-3.0.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/ucanaccess-4.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/xmlgraphics-commons-1.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/opencv-401.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="HybridFramework_With_PDF_Reporting/openCV"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/pdfcompare-1.1.8-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/pdfcompare-1.1.8-sources.jar"/>
+	<classpathentry kind="lib" path="lib/pdfcompare-1.1.8.jar" sourcepath="lib/pdfcompare-1.1.8-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/HybridFramework_With_PDF_Reporting/lib/pdfcompare-1.1.8-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.testng.TESTNG_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
