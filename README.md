@@ -24,7 +24,7 @@ Framework is built in : [Eclipse Neon IDE (For Java Developers)](https://www.ecl
 
 ## Requirements
 
-1. [JDK 1.8.0_191 or Higher](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+1. [JDK 1.8.0_191 or Higher](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) or [Open JDK](https://developers.redhat.com/products/openjdk/download)
 2. [Eclipse Neon or Higher](https://www.eclipse.org/downloads/packages/release)
 
 ## Contributing
@@ -41,5 +41,6 @@ A big thanks to GitHub and all of HYB_FW_PDF contributors.
 
 ## Upcoming Features
 
-1. "opencv" implementation
+1. Apache POI Instead Of JXL
+2. "opencv" implementation
 2. PDF reporting to support batch run
