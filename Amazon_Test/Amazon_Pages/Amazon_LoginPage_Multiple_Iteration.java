@@ -17,12 +17,13 @@ public class Amazon_LoginPage_Multiple_Iteration extends BaseClass
 	private static String[][] data = {{"SL.NO", "URL", "Search", "Result"}};
 	private static int slNo = 1;
 
+
 	ExcelLib elib = new ExcelLib();
 
 	@BeforeMethod
 	public void beforemethod(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl, String IterationCount) 
 	{
-		k.startReport(TestCaseName, TestCaseObjective, TestEnvironmentUrl, IterationCount);
+		k.startTestReport(TestCaseName, TestCaseObjective, TestEnvironmentUrl, IterationCount);
 	}
 
 	@SuppressWarnings("static-access")
@@ -41,12 +42,12 @@ public class Amazon_LoginPage_Multiple_Iteration extends BaseClass
 			if(k.launchApplication(browser, url))
 			{
 				String[][] updateData = {{Integer.toString(slNo), url, search, "PASS"}};
-				elib.writeWorkBook(append(data, updateData));
+				elib.writeWorkbook(append(data, updateData), "Execution_Status", "Execution", "execution_result.xlsx");
 			}
 			else
 			{
 				String[][] updateData = {{Integer.toString(slNo), url, search, "FAIL"}};
-				elib.writeWorkBook(append(data, updateData));
+				elib.writeWorkbook(append(data, updateData), "Execution_Status", "Execution", "execution_result.xlsx");
 			}
 
 			//Enter One Plus 6t in search box
@@ -56,7 +57,7 @@ public class Amazon_LoginPage_Multiple_Iteration extends BaseClass
 			k.clickObject(OR_Common.btnSearch, "Search");
 
 			//Verify products page is displayed
-			k.verifyPageDisplayed(OR_Common.weProductPageNavigationContainer, "Products");
+			k.verifyPageDisplayed(OR_Common.resultText, "Products");
 
 			//Click the first product
 			k.clickObjectJs(OR_Common.lnkFirstProduct, "First Product");
@@ -81,15 +82,16 @@ public class Amazon_LoginPage_Multiple_Iteration extends BaseClass
 		catch(Exception e)
 		{
 			//Log the exception in the report and conclude
-			k.logResultAndCaptureImage("FAIL", "ERROR : Abrupt Exit", e.toString(), "NO");
+			k.logResultAndCaptureScreenshot("FAIL", "ERROR : Abrupt Exit", e.toString(), "NO");
 		}
 		finally
 		{
 			//Quit Driver
-			driver.quit();
+			try{driver.quit();}
+			catch (Exception e) {k.abortOnException(e);}
 
 			//End Report
-			k.endReport();
+			k.endTestReport();
 		}
 	}
 

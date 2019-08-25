@@ -15,7 +15,7 @@ public class Amazon_LoginPage extends BaseClass
 	@BeforeMethod
 	public void beforemethod(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl) 
 	{
-		k.startReport(TestCaseName, TestCaseObjective, TestEnvironmentUrl);
+		k.startTestReport(TestCaseName, TestCaseObjective, TestEnvironmentUrl);
 	}
 
 	@SuppressWarnings("static-access")
@@ -41,13 +41,13 @@ public class Amazon_LoginPage extends BaseClass
 			k.clickObject(OR_Common.btnSearch, "Search");
 
 			//Verify products page is displayed
-			k.verifyPageDisplayed(OR_Common.weProductPageNavigationContainer, "Products");
+			k.verifyPageDisplayed(OR_Common.resultText, "Products");
 
 			//Click the first product
 			k.clickObjectJs(OR_Common.lnkFirstProduct, "First Product");
-
-			//Switch Tab Control
-			k.switchToSucceedingTab();
+			
+			//Switch To Next Tab
+			k.switchToSucceedingTab(); 
 
 			//Wait till the button is enabled
 			k.waitTillElementEnable(OR_Common.btnBuyNow);
@@ -61,7 +61,7 @@ public class Amazon_LoginPage extends BaseClass
 		catch(Exception e)
 		{
 			//Log the exception in the report and conclude
-			k.logResultAndCaptureImage("FAIL", "ERROR : Abrupt Exit", e.toString(), "NO");
+			k.logResultAndCaptureScreenshot("FAIL", "ERROR : Abrupt Exit", e.toString(), "NO");
 		}
 		finally
 		{
@@ -69,7 +69,7 @@ public class Amazon_LoginPage extends BaseClass
 			driver.quit();
 
 			//End Report
-			k.endReport();
+			k.endTestReport();
 		}
 	}
 }
