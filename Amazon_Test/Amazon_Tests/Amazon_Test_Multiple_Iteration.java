@@ -18,8 +18,8 @@ public class Amazon_Test_Multiple_Iteration
 	public Object[][] data() throws BiffException, IOException 
 	{
 		ExcelLib xl = new ExcelLib("BatchRun", this.getClass().getSimpleName());
-		IterationCount = String.valueOf(xl.iteratorCount());
-		return xl.getTestdata();
+		IterationCount = String.valueOf(xl.iterationCount());
+		return xl.getTestData();
 	}
 
 	//Test Case Objective
@@ -27,14 +27,6 @@ public class Amazon_Test_Multiple_Iteration
 	 * Test Case Objective
 	 */
 	private static String TestCaseObjective = "Validate Ordering of a product in Amazon website multiple times";
-
-	/**
-	 * 
-	 * @param url
-	 * @param browserName
-	 * @param search
-	 * @throws Exception
-	 */
 
 	@Test(dataProvider = "data")
 	/*Note: While providing the arguments, please make sure 

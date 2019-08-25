@@ -6,15 +6,14 @@ import org.testng.annotations.Test;
 
 import Amazon_Pages.Amazon_LoginPage;
 import excelLib.ExcelLib;
-import jxl.read.biff.BiffException;
 
 public class Amazon_Test_001
 {
 	@DataProvider
-	public Object[][] data() throws BiffException, IOException 
+	public Object[][] data() throws IOException 
 	{
 		ExcelLib xl = new ExcelLib("Test", this.getClass().getSimpleName());
-		return xl.getTestdata();
+		return xl.getTestData();
 	}
 	
 	//Test Case Objective
