@@ -398,9 +398,12 @@ public class ExcelLib
 
 	/**
 	 * writeWorkbook - Write Data To Specific Workbook's Specific Work Sheet
-	 * @param data - Data To Be Written
-	 * @throws IOException 
-	 * @throws EncryptedDocumentException 
+	 * @param data - Data To Be Written, provide 2D Array
+	 * @param sheetName - Name Of The Sheet To Which Data Has To Be Written
+	 * @param folderName - Name Of The Folder Where Excel File Is Present/To Be Created
+	 * @param workbookName - Name Of The Workbook To Be Created/Which Already Exist, Provide Extension Also (.xlsx Or .xls)
+	 * @throws EncryptedDocumentException
+	 * @throws IOException
 	 */
 	public static void writeWorkbook(String [][] data, String sheetName, String folderName, String workbookName) throws EncryptedDocumentException, IOException
 	{
