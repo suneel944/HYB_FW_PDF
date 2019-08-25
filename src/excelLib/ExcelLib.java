@@ -397,8 +397,8 @@ public class ExcelLib
 	}
 
 	/**
-	 * writeWorkbook
-	 * @param data
+	 * writeWorkbook - Write Data To Specific Workbook's Specific Work Sheet
+	 * @param data - Data To Be Written
 	 * @throws IOException 
 	 * @throws EncryptedDocumentException 
 	 */
