@@ -26,7 +26,7 @@ Framework is built in : [Eclipse Neon IDE (For Java Developers)](https://www.ecl
 
 1. [JDK 1.8.0_191 or Higher](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) or [Open JDK](https://developers.redhat.com/products/openjdk/download)
 2. [Eclipse Neon or Higher](https://www.eclipse.org/downloads/packages/release)
-3. [TestNG 6.9.9 or Higher] Instructions on how to install from official website [TestNG](https://testng.org/doc/download.html) or download from here [mvnrepository - 6.9.9](https://repo1.maven.org/maven2/org/testng/testng/6.9.9/) or checkout other latest versions here [mvnrepository - TestNG Central](https://mvnrepository.com/artifact/org.testng/testng)
+3. TestNG 6.9.9 or Higher. Instructions on how to install from official website [TestNG](https://testng.org/doc/download.html) or download from [mvnrepository - 6.9.9](https://repo1.maven.org/maven2/org/testng/testng/6.9.9/) or checkout other latest versions here [mvnrepository - TestNG Central](https://mvnrepository.com/artifact/org.testng/testng)
 
 ## Contributing
 
