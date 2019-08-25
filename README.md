@@ -26,6 +26,7 @@ Framework is built in : [Eclipse Neon IDE (For Java Developers)](https://www.ecl
 
 1. [JDK 1.8.0_191 or Higher](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) or [Open JDK](https://developers.redhat.com/products/openjdk/download)
 2. [Eclipse Neon or Higher](https://www.eclipse.org/downloads/packages/release)
+3. [TestNG 6.9.9 or Higher](https://testng.org/doc/download.html)
 
 ## Contributing
 
