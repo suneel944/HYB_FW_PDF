@@ -52,7 +52,6 @@ import javax.imageio.stream.ImageOutputStream;
 //Selenium Imports
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.math3.exception.NullArgumentException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFPictureData;
 import org.openqa.selenium.Alert;
