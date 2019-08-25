@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +52,7 @@ import javax.imageio.stream.ImageOutputStream;
 //Selenium Imports
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.math3.exception.NullArgumentException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFPictureData;
 import org.openqa.selenium.Alert;
@@ -220,6 +223,21 @@ public class Keywords extends BaseClass
 	 * Document Closure Flag
 	 */
 	private static boolean documentClosed = false;
+
+	/**
+	 * User Agent Info
+	 */
+	private static String userAgent = "NA";
+
+	/**
+	 * User Agent Counters
+	 */
+	private static int chrome=0, ie=0, firefox=0, msedge=0;
+
+	/**
+	 * User Agent HashMap
+	 */
+	private static HashMap<String, Integer> userAgentStats = new HashMap<String, Integer>();
 
 	//*******************************
 	//Font Declarations
@@ -866,6 +884,21 @@ public class Keywords extends BaseClass
 				document.add(p8);
 			}
 
+			/*User Agent Status*/
+			try 
+			{
+				for (@SuppressWarnings("rawtypes") Map.Entry mapElement : userAgentStats.entrySet())
+					if ((Integer)mapElement.getValue() > 0)
+						document.add(new Paragraph("User Agent : " +mapElement.getKey()+ " : " +mapElement.getValue()+ " Run/s", new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+				if (userAgentStats.isEmpty())
+					throw new NullPointerException("Force The User Agent Write"); 
+			}
+			catch (NullPointerException e)
+			{
+				/*Handle Sudden Abrupt Exit*/
+				document.add(new Paragraph("User Agent : " +userAgent, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+			}
+
 			//Overall Passed Steps
 			document.add(new Paragraph("Overall Steps Passed : " +passStepCount, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
 
@@ -909,6 +942,23 @@ public class Keywords extends BaseClass
 	{
 		try
 		{
+			/*User Agents Used In Each iteration*/
+			switch (userAgent)
+			{
+			case "Chrome":
+				userAgentStats.put("Chrome", chrome);
+				break;
+			case "IE":
+				userAgentStats.put("IE", ie);
+				break;
+			case "Firefox":
+				userAgentStats.put("Firefox", firefox);
+				break;
+			case "MsEdge":
+				userAgentStats.put("MsEdge", msedge);
+				break;
+			}
+
 			//Add a new page
 			document.newPage();
 
@@ -942,6 +992,7 @@ public class Keywords extends BaseClass
 				iterationResult = "PASS";
 
 			//*********************************************************************
+
 			//Iteration Status
 			Chunk itrResult = new Chunk("Iteration "+itr+ " Result : ", blackTimesDefaultSize);
 			itr++;
@@ -962,6 +1013,12 @@ public class Keywords extends BaseClass
 				p8.add(p1);
 				document.add(p8);
 			}
+
+			//*********************************************************************
+			//User Agent
+			document.add(new Paragraph("User Agent : " +userAgent, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
+
+			//*********************************************************************
 
 			//Iteration Passed Steps
 			document.add(new Paragraph("Iteration Steps Passed : " +iterationPassedStepCount, new Font(Font.FontFamily.HELVETICA, Font.DEFAULTSIZE, Font.BOLD)));
@@ -996,14 +1053,14 @@ public class Keywords extends BaseClass
 	 * @param exception Provide Exception As Argument
 	 * @throws Exception
 	 */
-	protected static void abortOnException(Exception exception) throws Exception
+	public static void abortOnException(Exception exception) throws Exception
 	{
 		overalRunResultFlag = true;
 		try
 		{	
 			//WebDriverException
 			if(exception.toString().contains("WebDriverException")) 
-				logResultAndCaptureScreenshot("ERROR", "Fatal Error : Browser Has Been Closed", exception.toString(), takeNativeScreenshot());
+				logResultAndCaptureScreenshot("ERROR", "Fatal Error : Browser Has Been Closed/Failed Due To Network Failure", exception.toString(), takeNativeScreenshot());
 			//NullPointerException
 			else if(exception.toString().contains("NullPointerException")) 
 				logResultAndCaptureScreenshot("ERROR", "Error : Runtime Exception (Null)", exception.toString(), "YES", takeNativeScreenshot());
@@ -1071,7 +1128,7 @@ public class Keywords extends BaseClass
 			System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 			System.err.println("***********!!!EXCEPTION OCCURED!!!***********");
 			System.out.println("************Terminated Execution*************");
-			System.out.println("*******!!!Report Has been Generated!!!*******");
+			System.out.println("*******!!!Report Has Been Generated!!!*******");
 			System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
 			//Quit Driver
@@ -1103,6 +1160,8 @@ public class Keywords extends BaseClass
 				System.setProperty("webdriver.chrome.driver", currentDir+"\\drivers\\chromedriver.exe");
 				driver = new ChromeDriver();
 				driver.manage().window().maximize();
+				userAgent = "Chrome";
+				++chrome;
 				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On Chrome", "NO");
 			} 
 			else if (browserName.equalsIgnoreCase("IE"))
@@ -1110,6 +1169,8 @@ public class Keywords extends BaseClass
 				System.setProperty("webdriver.ie.driver", currentDir+"\\drivers\\IEDriverServer.exe");
 				driver = new InternetExplorerDriver();
 				driver.manage().window().maximize();
+				userAgent = "IE";
+				++ie;
 				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On IE", "NO");
 			} 
 			else if (browserName.equalsIgnoreCase("Firefox")) 
@@ -1117,13 +1178,17 @@ public class Keywords extends BaseClass
 				System.setProperty("webdriver.gecko.driver", currentDir+"\\drivers\\geckodriver.exe");
 				driver = new FirefoxDriver();
 				driver.manage().window().maximize();
+				userAgent = "Firefox";
+				++firefox;
 				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On FireFox", "NO");
 			}
 			else if (browserName.equalsIgnoreCase("MSEDGE"))
 			{
-				System.setProperty("webdriver.edge.driver", currentDir+"\\drivers\\msedgedriver.exe");
+				System.setProperty("webdriver.edge.driver", currentDir+"\\drivers\\MicrosoftWebDriver.exe");
 				driver = new EdgeDriver();
 				driver.manage().window().maximize();
+				userAgent = "MsEdge";
+				++msedge;
 				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On Edge", "NO");
 			}
 			else
@@ -1513,7 +1578,7 @@ public class Keywords extends BaseClass
 				alt.accept();
 			}
 			logResultAndCaptureScreenshot("PASS", "Confirm Alert Popup", "Alert Popup Accecpted Successfully", "YES", takeNativeScreenshot());
-		} 
+		}
 		catch (Exception e) 
 		{
 			//Log
@@ -2212,6 +2277,7 @@ public class Keywords extends BaseClass
 				WebElement el = driver.findElement(by);
 				Actions actions = new Actions(driver);
 				actions.moveToElement(element).perform();
+				Thread.sleep(2000);
 				actions.moveToElement(el).click();
 				logResultAndCaptureScreenshot("PASS", "Select Menu Through Mouse Hover", "Selected " +elementname+ " Menu Successfully.", "NO");
 			}
@@ -2532,7 +2598,6 @@ public class Keywords extends BaseClass
 				//Fluent wait
 				WebElement e1;
 				e1 = fluentWait(by, 1);
-
 				if (e1.isDisplayed())
 					logResultAndCaptureScreenshot("PASS", "Verify Page Is Displayed", pageName + " page is Displayed", "YES", stopWatch()); 
 				else
@@ -3120,15 +3185,35 @@ public class Keywords extends BaseClass
 
 	/**
 	 * getCurrentDate - Fetch Current Date From System
-	 * @return - Current Date
+	 * @return - Current Date (MM/DD/YY) Format
 	 */
 	public String getCurrentDate()
 	{
 		String str = "";
 		try
 		{
-			//Updated @ 11/1/2018 - changed from (MM/dd/YY) to (M/d/yy))
-			SimpleDateFormat sdf = new SimpleDateFormat("M/d/yy");
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
+			str = sdf.format(System.currentTimeMillis());
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return str;
+	}
+
+	/**
+	 * getCurrentDate - Fetch Current Date From System In Specified Format
+	 * @param dateFormat - M/d/yy or M/dd/yyyy or more
+	 * @see {@link https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html}
+	 * @return
+	 */
+	public String getCurrentDate(String dateFormat)
+	{
+		String str = "";
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 			str = sdf.format(System.currentTimeMillis());
 		}
 		catch (Exception e) 
@@ -3160,7 +3245,7 @@ public class Keywords extends BaseClass
 				str=str.substring(0, str.length()-1);
 				logResultAndCaptureScreenshot("PASS", "Retrieve List Of Values From Drop Down", elementname + "dropdown values are retrieved", "NO");
 			}
-		} 
+		}
 		catch (Exception e) 
 		{
 			//Log
@@ -3856,7 +3941,45 @@ public class Keywords extends BaseClass
 			//Log
 			logResultAndCaptureScreenshot("FAIL", "Drag And Drop", "Failed To Perform Drag And Drop", "YES");
 			//TODO : handle exception
-			abortOnException(e);
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * validateDropdownOptions - Validate N Number Drop-Down Options Depending On The Argument Length
+	 * @param by - Drop Down Menu Locator Address (Xpath, CSS, ID, Class Name..etc)
+	 * @param optionList - Drop-Down Options Separated With ";"
+	 * @throws Exception
+	 */
+	public void validateDropDownOptions(By by, String optionList) throws Exception
+	{
+		try
+		{
+			WebElement e1 = fluentWait(by, 2);
+			List<String> data= Arrays.asList(optionList.split(";"));
+			int failCounter = 0;
+			if(e1.isDisplayed())
+			{
+				Select se = new Select(e1);
+				ArrayList<WebElement> options = new ArrayList<WebElement>(se.getOptions());
+				while(options.iterator().hasNext() && data.iterator().hasNext())
+				{
+					//Reset Flag After Each Iteration
+					if (!(options.iterator().next().getText().equalsIgnoreCase(data.iterator().next())))
+						failCounter++;
+				}
+				if (failCounter>0)
+					logResultAndCaptureScreenshot("FAIL", "Validate Drop-Down Options", "Validation Failed!", "NO");
+				else 
+					logResultAndCaptureScreenshot("PASS", "Validate Drop-Down Options", "Successfully Validated Dropdown Options", "NO");
+			}
+		}
+		catch (Exception e)
+		{
+			//Log
+			logResultAndCaptureScreenshot("FAIL", "Validate Dropdown Options", "Failed To Locate Drop-Down Element", "YES");
+			//TODO : handle exception
+			e.printStackTrace();
 		}
 	}
 }
