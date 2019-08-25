@@ -41,6 +41,5 @@ A big thanks to GitHub and all of HYB_FW_PDF contributors.
 
 ## Upcoming Features
 
-1. Apache POI Instead Of JXL
-2. "opencv" implementation
+1. "opencv" implementation
 2. PDF reporting to support batch run
