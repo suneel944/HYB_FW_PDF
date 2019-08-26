@@ -16,7 +16,7 @@ public class examplePage extends BaseClass
 	public void beforemethod(String TestCaseName, String TestCaseObjective, String TestEnvironmentUrl) 
 	{
 		//Initiate Report
-		k.startReport(TestCaseName, TestCaseObjective, TestEnvironmentUrl);
+		k.startTestReport(TestCaseName, TestCaseObjective, TestEnvironmentUrl);
 	}
 	//******************************************************************************************
 
@@ -53,7 +53,7 @@ public class examplePage extends BaseClass
 		catch(Exception e)
 		{
 			//Capture the abrupt exit of the script through available reporting function in keyword library
-			k.logResultAndCaptureImage("FAIL", "ERROR : Abrupt Exit", e.toString(), "NO");
+			k.logResultAndCaptureScreenshot("FAIL", "ERROR : Abrupt Exit", e.toString(), "NO");
 		}
 		finally
 		{
@@ -62,7 +62,7 @@ public class examplePage extends BaseClass
 			driver.quit();
 
 			//End Report
-			k.endReport();
+			k.endTestReport();
 		}
 		//******************************************************************************************
 	}
