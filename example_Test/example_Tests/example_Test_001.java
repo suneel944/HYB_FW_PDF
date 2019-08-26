@@ -5,16 +5,16 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import example_Pages.examplePage;
 import excelLib.ExcelLib;
-import jxl.read.biff.BiffException;
 
 public class example_Test_001
 {
 	//*******************************************************************************
 	@DataProvider
-	public Object[][] data() throws BiffException, IOException 
+	public Object[][] data() throws IOException 
 	{
 		ExcelLib xl = new ExcelLib("Excel Sheet Name", this.getClass().getSimpleName());
-		return xl.getTestdata();
+		return xl.getTestData();
+		
 	}
 	//*******************************************************************************
 	//Test Case Objective
