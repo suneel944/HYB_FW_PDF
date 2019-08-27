@@ -12,6 +12,14 @@
 * Consists of wide range of keywords which are essentials for testing platform
 * Monolithic project structure : Contains libraries, Test data files, output reports everything in one workspace.
 * Supports result writeback to spreadsheet
+* Supports Microsoft Edge, Chrome, IE and Firefox browsers
+
+## Note
+From Microsoft Edge v18, there is no requirement of MicrosoftWebDriver.exe as Microsoft WebDriver is a Windows feature on demand. Hence to add this feature, execute the below code in the CMD with **admin rights**
+**Code : ** **DISM.exe /Online /Add-Capability /CapabilityName:Microsoft.WebDriver~~~~0.0.1.0
+[**Reference : **](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
+
+
 
 ## Background
 
