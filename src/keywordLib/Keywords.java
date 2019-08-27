@@ -1183,7 +1183,6 @@ public class Keywords extends BaseClass
 			}
 			else if (browserName.equalsIgnoreCase("MSEDGE"))
 			{
-				System.setProperty("webdriver.edge.driver", currentDir+"\\drivers\\MicrosoftWebDriver.exe");
 				driver = new EdgeDriver();
 				driver.manage().window().maximize();
 				userAgent = "MsEdge";
