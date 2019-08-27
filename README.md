@@ -14,15 +14,6 @@
 * Supports result writeback to spreadsheet
 * Supports Microsoft Edge, Chrome, IE and Firefox browsers
 
-## Note
-From Microsoft Edge v18, there is no requirement of MicrosoftWebDriver.exe as Microsoft WebDriver is a Windows feature on demand. 
-<br>Hence to add this feature and to continue automating **Microsoft Edge** browser, execute the below code in the CMD with admin rights<br>
-***CMD Code:***
-<br>**DISM.exe /Online /Add-Capability /CapabilityName:Microsoft.WebDriver~~~~0.0.1.0**<br>
-<br>**Official information from Microsoft can be found..**[here](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
-
-
-
 ## Background
 
 HYB_FW_PDF, is a **hybrid framework** (Combination of **Data driven** and **Keyword**) along with **PDF reporting**.  One reason I created this project because there is a lack of complete end to end solution for a **Testing Framework** and people struggle to get **PDF** reports for the completed tasks (**in testing perspective**).
@@ -30,7 +21,14 @@ HYB_FW_PDF, is a **hybrid framework** (Combination of **Data driven** and **Keyw
 ## Note
 
 **Target Platform :** Testing : Functional and UI
-Framework is built in : [Eclipse Neon IDE (For Java Developers)](https://www.eclipse.org/downloads/packages/release/neon/3/eclipse-ide-java-developers)
+Framework is built in : [Eclipse Neon IDE (For Java Developers)](https://www.eclipse.org/downloads/packages/release/neon/3/eclipse-ide-java-developers)<br>
+<br>**From Microsoft Edge v18, MicrosoftWeDriver.exe is not required**<br>
+As Microsoft WebDriver is a Windows feature on demand. 
+<br>Hence to add this feature and to continue automating **Microsoft Edge** browser, execute the below code in the CMD with admin rights<br>
+**CMD Code:**
+<br>DISM.exe /Online /Add-Capability /CapabilityName:Microsoft.WebDriver~~~~0.0.1.0
+<br>[Official information from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
+
 
 ## Requirements
 
