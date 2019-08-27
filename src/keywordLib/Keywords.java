@@ -19,8 +19,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 
 //Java Util Imports
@@ -3977,6 +3979,66 @@ public class Keywords extends BaseClass
 			//Log
 			logResultAndCaptureScreenshot("FAIL", "Validate Dropdown Options", "Failed To Locate Drop-Down Element", "YES");
 			//TODO : handle exception
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * validateLinksInPage - Validate Whether Links Are Working Correctly/Broken In Any Page Based On The HTTP Response Code 
+	 * @param homePageURL - Home Page URL
+	 * @throws Exception
+	 */
+	public void validateLinksInPage(String homePageURL) throws Exception
+	{
+		try 
+		{
+			//*************************************************
+			/*Declarations*/
+			String url = "";
+			int responseCode = 200;
+			HttpURLConnection huc = null;
+			int validLinks=0,invalidLinks=0;
+
+			//*************************************************
+			List<WebElement> links = driver.findElements(By.tagName("a"));
+			Iterator<WebElement> itr = links.iterator();
+			while (itr.hasNext())
+			{
+				url = itr.next().getAttribute("href");
+				if (url==null || url.isEmpty())
+					continue;
+				if(!url.startsWith(homePageURL))
+					continue;
+				try
+				{
+					huc = (HttpURLConnection)(new URL(url).openConnection());
+					huc.setRequestMethod("HEAD");
+					huc.connect();
+					responseCode = huc.getResponseCode();
+					/*Validate*/
+					if (responseCode >= 400)
+					{
+						invalidLinks++;
+						if (!itr.hasNext())
+							logResultAndCaptureScreenshot("FAIL", "Validate Links In page", "Validation Failed As The Number Of Invalid/Broken Links : "+invalidLinks, "NO");
+					}
+					else
+					{
+						validLinks++;
+						if (!itr.hasNext())
+							logResultAndCaptureScreenshot("PASS", "Validate Links In Page", "Validated Links Successfully. Valid Links : "+validLinks+ " Invalid/Broken Links : "+invalidLinks, "NO");
+					}
+				} 
+				catch (MalformedURLException e)
+				{
+					logResultAndCaptureScreenshot("ERROR", "Validate Links In Page", e.toString(), "NO");
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			logResultAndCaptureScreenshot("ERROR", "Validate Links In Page", e.toString(), "YES");
 			e.printStackTrace();
 		}
 	}
