@@ -6,7 +6,7 @@
 
 ## Features
 
-* No Library configuration requried
+* No library configuration requried
 * Outputs beautiful pdf report with screenshots
   * Supports multiple iteration execution
 * Consists of wide range of keywords which are essentials for testing platform
