@@ -15,9 +15,11 @@
 * Supports Microsoft Edge, Chrome, IE and Firefox browsers
 
 ## Note
-From Microsoft Edge v18, there is no requirement of MicrosoftWebDriver.exe as Microsoft WebDriver is a Windows feature on demand. Hence to add this feature, execute the below code in the CMD with **admin rights**<br>
-**Code : ** **DISM.exe /Online /Add-Capability /CapabilityName:Microsoft.WebDriver~~~~0.0.1.0**<br>
-Official information from Microsoft can be found [here](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
+From Microsoft Edge v18, there is no requirement of MicrosoftWebDriver.exe as Microsoft WebDriver is a Windows feature on demand. 
+<br>Hence to add this feature and to continue automating **Microsoft Edge** browser, execute the below code in the CMD with admin rights<br>
+***CMD Code:***
+<br>**DISM.exe /Online /Add-Capability /CapabilityName:Microsoft.WebDriver~~~~0.0.1.0**<br>
+<br>**Official information from Microsoft can be found..**[here](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
 
 
 
