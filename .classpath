@@ -3,8 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="Amazon_Test"/>
 	<classpathentry kind="src" path="example_Test"/>
-	<classpathentry kind="src" path="openCV_test"/>
-	<classpathentry kind="src" path="Trail_Test"/>
 	<classpathentry kind="lib" path="lib/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/ant-launcher-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/bcprov-jdk16-1.46.jar"/>
