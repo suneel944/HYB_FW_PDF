@@ -4,12 +4,10 @@ import java.io.IOException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import baseClassLib.BaseClass;
 import excelLib.ExcelLib;
 import pages.Amazon_LoginPage;
 
-public class Amazon_Test_001 extends BaseClass
+public class Amazon_Test_001
 {
 	@DataProvider
 	public Object[][] data() throws IOException 

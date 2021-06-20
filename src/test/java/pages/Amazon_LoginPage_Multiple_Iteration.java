@@ -2,14 +2,12 @@ package pages;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import baseClassLib.BaseClass;
 import keywordLib.Keywords;
 import properties.orAmazonCommon;
 import excelLib.ExcelLib;
 
 
-public class Amazon_LoginPage_Multiple_Iteration extends BaseClass
+public class Amazon_LoginPage_Multiple_Iteration
 {
 	Keywords k = new Keywords(this.getClass().getSimpleName());
 
@@ -87,7 +85,7 @@ public class Amazon_LoginPage_Multiple_Iteration extends BaseClass
 		finally
 		{
 			//Quit Driver
-			try{driver.quit();}
+			try{k.closeAllBrowser();}
 			catch (Exception e) {k.abortOnException(e);}
 
 			//End Report

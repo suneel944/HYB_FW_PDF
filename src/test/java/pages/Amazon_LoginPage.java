@@ -5,10 +5,9 @@ import org.testng.annotations.Test;
 
 import keywordLib.Keywords;
 import properties.orAmazonCommon;
-import baseClassLib.BaseClass;
 
 
-public class Amazon_LoginPage extends BaseClass
+public class Amazon_LoginPage
 {
 	 Keywords k = new Keywords(this.getClass().getSimpleName());
 
@@ -67,7 +66,7 @@ public class Amazon_LoginPage extends BaseClass
 		finally
 		{
 			//Quit Driver
-			try{driver.quit();}
+			try{k.closeAllBrowser();}
 			catch (Exception e) {k.abortOnException(e);}
 
 			//End Report

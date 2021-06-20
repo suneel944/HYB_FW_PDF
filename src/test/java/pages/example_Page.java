@@ -2,11 +2,9 @@ package pages;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import baseClassLib.BaseClass;
 import keywordLib.Keywords;
 
-public class example_Page extends BaseClass
+public class example_Page
 {
 	//Keyword Library Instantiation
 	Keywords k = new Keywords(this.getClass().getSimpleName());
@@ -58,7 +56,7 @@ public class example_Page extends BaseClass
 		finally
 		{
 			//Quit Driver
-			try{driver.quit();}
+			try{k.closeAllBrowser();}
 			catch (Exception e) {k.abortOnException(e);}
 
 			//End Report
