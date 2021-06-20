@@ -23,7 +23,7 @@ public class ExcelLib
 	private static boolean updateWorkbook = false;
 	private static FileOutputStream out;
 	/*Default Workbook Path*/
-	private static String workbookPath = currentDir+"\\src\\test\\resources\\TestData\\Input_Data.xls";
+	private static String workbookPath = currentDir+"//src//test//resources//TestData//Input_Data.xls";
 	/*Custom Workbook Path*/
 	private static String customWorkbookPath;
 
