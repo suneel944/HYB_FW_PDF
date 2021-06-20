@@ -2,13 +2,11 @@ package pages;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import baseClassLib.BaseClass;
 import excelLib.ExcelLib;
 import keywordLib.Keywords;
 
 @SuppressWarnings("unused")
-public class example_Page_Multiple_Iteration extends BaseClass
+public class example_Page_Multiple_Iteration
 {
 	//Keyword Library Instantiation
 	Keywords k = new Keywords(this.getClass().getSimpleName());
@@ -87,7 +85,7 @@ public class example_Page_Multiple_Iteration extends BaseClass
 		finally
 		{
 			//Quit Driver
-			try{driver.quit();}
+			try{k.closeAllBrowser();}
 			catch (Exception e) {k.abortOnException(e);}
 
 			//End Report
