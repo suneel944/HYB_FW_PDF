@@ -70,7 +70,6 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -103,7 +102,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
-import baseClassLib.BaseClass;
+import baseClassLib.supplier.DriverFactory;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -113,7 +112,7 @@ import net.sourceforge.tess4j.TesseractException;
  * @author Suneel Kaushik Subramanya
  * @version 0.1
  */
-public class Keywords extends BaseClass 
+public class Keywords extends DriverFactory
 {
 	//********************************************************************
 	//Declarations
@@ -235,9 +234,9 @@ public class Keywords extends BaseClass
 	private static String userAgent = "NA";
 
 	/**
-	 * User Agent Counters
+	 * WebDriver
 	 */
-	private static int chrome=0, ie=0, firefox=0, msedge=0, opera=0;
+	private static WebDriver driver;
 
 	/**
 	 * User Agent HashMap
@@ -296,14 +295,14 @@ public class Keywords extends BaseClass
 		//Folder path creation
 		//****************************************************************************
 		//If Images folder is not present create an image folder in current directory
-		imFILE = new File(currentDir +"\\images");
+		imFILE = new File(currentDir +"//images");
 		if (!imFILE.exists())
 		{
 			imFILE.mkdir();
 		}
 
 		//If Screenshots folder is not present, then create a screenshot folder in current directory
-		imFILE = new File(currentDir + "\\images\\Screenshots");
+		imFILE = new File(currentDir + "//images//Screenshots");
 		if (!imFILE.exists())
 		{
 			imFILE.mkdir();
@@ -317,7 +316,7 @@ public class Keywords extends BaseClass
 		String imgdateval = imgdate2[0] + imgdate2[1] + imgdate2[2]; 
 
 		//ImagePath
-		String imgPath = currentDir +"\\images\\ScreenShots\\page_"+imgdate1[1] + imgdate1[2] + imgdateval+".png";
+		String imgPath = currentDir +"//images//ScreenShots//page_"+imgdate1[1] + imgdate1[2] + imgdateval+".png";
 
 		//Capture Image
 		try
@@ -349,7 +348,7 @@ public class Keywords extends BaseClass
 		String imgdateval = imgdate2[0] + imgdate2[1] + imgdate2[2]; 
 
 		//ImagePath
-		String imgPath = currentDir +"\\images\\ScreenShots\\page_"+imgdate1[1] + imgdate1[2] + imgdateval+".png";
+		String imgPath = currentDir +"//images//ScreenShots//page_"+imgdate1[1] + imgdate1[2] + imgdateval+".png";
 
 		//****************************************************************************
 		try
@@ -358,12 +357,12 @@ public class Keywords extends BaseClass
 			//Folder path creation
 			//****************************************************************************
 			//If Images folder is not present create an image folder in current directory
-			imFILE = new File(currentDir +"\\images");
+			imFILE = new File(currentDir +"//images");
 			if (!imFILE.exists())
 				imFILE.mkdir();
 
 			//If Screenshots folder is not present, then create a screenshot folder in current directory
-			imFILE = new File(currentDir + "\\images\\Screenshots");
+			imFILE = new File(currentDir + "//images//Screenshots");
 			if (!imFILE.exists())
 				imFILE.mkdir();
 
@@ -415,19 +414,19 @@ public class Keywords extends BaseClass
 		//****************************************************************************
 
 		//Create pdf_Reports folder if it is not created
-		FILE = new File(currentDir+"\\pdf_Reports");
+		FILE = new File(currentDir+"//pdf_Reports");
 		if (!FILE.exists())
 			FILE.mkdir();
 
 		//Create Folder Structure
-		dateFolder = currentDir+"\\pdf_Reports\\"+date1[1]+"_"+date1[2]+"_"+date1[5];
+		dateFolder = currentDir+"//pdf_Reports//"+date1[1]+"_"+date1[2]+"_"+date1[5];
 
 		FILE = new File(dateFolder);
 		if (!FILE.exists())
 			FILE.mkdir();
 
 		//Create page specific folder 
-		FILE = new File(dateFolder+"\\"+ClassName);
+		FILE = new File(dateFolder+"//"+ClassName);
 		if (!FILE.exists())
 			FILE.mkdir();
 
@@ -447,7 +446,7 @@ public class Keywords extends BaseClass
 
 				//Create pdf instance
 				document = new Document(PageSize.A4);
-				writer = PdfWriter.getInstance(document, new FileOutputStream(new File(dateFolder+"\\"+ClassName+"\\"+Keywords.TestCaseName+ "_"+ date1[1] + date1[2] + dateval +".pdf")));
+				writer = PdfWriter.getInstance(document, new FileOutputStream(new File(dateFolder+"//"+ClassName+"//"+Keywords.TestCaseName+ "_"+ date1[1] + date1[2] + dateval +".pdf")));
 				document.open();
 
 				//***************************************************************************************************************************
@@ -498,7 +497,7 @@ public class Keywords extends BaseClass
 				//Add a line separator
 				document.add(new LineSeparator(0.5f, 100, null, 0, -5));
 
-				Image reportLogo = Image.getInstance(currentDir+"\\hybrid_logo.png");
+				Image reportLogo = Image.getInstance(currentDir+"//hybrid_logo.png");
 				//If image size exceeds a threshold value decrease it to below size
 				if ((reportLogo.getWidth()>525.00) | (reportLogo.getHeight()>500.00))
 				{
@@ -951,19 +950,19 @@ public class Keywords extends BaseClass
 			switch (userAgent)
 			{
 			case "Chrome":
-				userAgentStats.put("Chrome", chrome);
+				userAgentStats.put("Chrome", getChromeCount());
 				break;
 			case "IE":
-				userAgentStats.put("IE", ie);
+				userAgentStats.put("IE", getIeCount());
 				break;
 			case "Firefox":
-				userAgentStats.put("Firefox", firefox);
+				userAgentStats.put("Firefox", getFirefoxCount());
 				break;
 			case "MsEdge":
-				userAgentStats.put("MsEdge", msedge);
+				userAgentStats.put("MsEdge", getMsEdgeCount());
 				break;
 			case "Opera":
-				userAgentStats.put("Opera", opera);
+				userAgentStats.put("Opera", getOperaCount());
 			}
 
 			//Add a new page
@@ -1164,57 +1163,10 @@ public class Keywords extends BaseClass
 		{
 			//Timer
 			startWatch();
-			if (browserName.equalsIgnoreCase("Chrome")) 
-			{
-				WebDriverManager.chromedriver().setup();
-				driver = new ChromeDriver();
-				driver.manage().window().maximize();
-				userAgent = "Chrome";
-				++chrome;
-				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On Chrome", "NO");
-			} 
-			else if (browserName.equalsIgnoreCase("IE"))
-			{
-				WebDriverManager.iedriver().setup();
-				driver = new InternetExplorerDriver();
-				driver.manage().window().maximize();
-				userAgent = "IE";
-				++ie;
-				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On IE", "NO");
-			} 
-			else if (browserName.equalsIgnoreCase("Firefox")) 
-			{
-				WebDriverManager.firefoxdriver().setup();
-				driver = new FirefoxDriver();
-				driver.manage().window().maximize();
-				userAgent = "Firefox";
-				++firefox;
-				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On FireFox", "NO");
-			}
-			else if (browserName.equalsIgnoreCase("MSEDGE"))
-			{
-				WebDriverManager.edgedriver().setup();
-				driver = new EdgeDriver();
-				driver.manage().window().maximize();
-				userAgent = "MsEdge";
-				++msedge;
-				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On Edge", "NO");
-			}
-			else if (browserName.equalsIgnoreCase("OPERA"))
-			{
-				WebDriverManager.operadriver().setup();
-				driver = new OperaDriver();
-				driver.manage().window().maximize();
-				userAgent = "Opera";
-				++opera;
-				logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On Opera", "NO");
-			}
-			else
-			{
-				// TODO: handle exception - For Passing Incorrect Browser Name As An Argument
-				throw new InvalidArgumentException("Wrong Browser Name Argument");
-			}
-
+			driver = getDriver(browserName);
+			driver.manage().window().maximize();
+			userAgent = browserName;
+			logResultAndCaptureScreenshot("PASS", "Launch Application", "Executing Script On " + browserName, "NO");
 			deleteAllCookie();
 			driver.get(url);
 			logResultAndCaptureScreenshot("PASS", "Launch URL", "Opened URL : "+url, "YES", stopWatch());
@@ -1367,7 +1319,7 @@ public class Keywords extends BaseClass
 			if (e1.isDisplayed()) 
 			{
 				String actualString = e1.getText();
-				assertTrue(actualString.replaceAll("\\n", "").replaceAll("\\t", "").replaceAll(" ", "").toUpperCase().contains(data.replaceAll(" ", "").toUpperCase()));
+				assertTrue(actualString.replaceAll("//n", "").replaceAll("//t", "").replaceAll(" ", "").toUpperCase().contains(data.replaceAll(" ", "").toUpperCase()));
 				logResultAndCaptureScreenshot("PASS", "Element Should Contain", data+" Is Presents In Element", "YES");
 			}
 		}
@@ -3225,7 +3177,6 @@ public class Keywords extends BaseClass
 	/**
 	 * getCurrentDate - Fetch Current Date From System In Specified Format
 	 * @param dateFormat - M/d/yy or M/dd/yyyy or more
-	 * @see {@link https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html}
 	 * @return
 	 */
 	public String getCurrentDate(String dateFormat)
@@ -3278,8 +3229,8 @@ public class Keywords extends BaseClass
 
 	/**
 	 * stringShouldContain - Validate A Substring In A String
-	 * @param Parent - Parent String
-	 * @param Child - Substring Of A Parent String
+	 * @param parent - Parent String
+	 * @param child - Substring Of A Parent String
 	 * @throws Exception
 	 */
 	public void stringShouldContain(String parent, String child) throws Exception 
@@ -3515,7 +3466,7 @@ public class Keywords extends BaseClass
 		//Creating a new tesseract instance and setting the data path
 		//that references trained data and the English language library
 		ITesseract instance = new Tesseract();
-		instance.setDatapath(currentDir+"\\tessdata");		
+		instance.setDatapath(currentDir+"//tessdata");		
 
 		//Create a try catch method to run the OCR on the document referred above
 		try 
@@ -3814,11 +3765,11 @@ public class Keywords extends BaseClass
 			String filename =  new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
 
 			//If Folder path is not created, created it, otherwise ignore it
-			this.FILE = new File(currentDir+"\\images\\TesseractImages\\");
+			this.FILE = new File(currentDir+"//images//TesseractImages//");
 			if (!this.FILE.exists())
 				this.FILE.mkdir();
 
-			String imagePath = currentDir+"\\images\\TesseractImages\\" + "tessarct_" + filename + ".png";
+			String imagePath = currentDir+"//images//TesseractImages//" + "tessarct_" + filename + ".png";
 
 			//Create a new image file
 			FileUtils.copyFile(screenshot, new File(imagePath));
@@ -3833,13 +3784,13 @@ public class Keywords extends BaseClass
 			if (x_factor != 1)
 			{
 				//If Folder path is not created, created it, otherwise ignore it
-				this.FILE = new File(currentDir+"\\images\\WebElementScreenShots");
+				this.FILE = new File(currentDir+"//images//WebElementScreenShots");
 				if (!this.FILE.exists())
 					this.FILE.mkdir();
-				String reportImagePath = currentDir+"\\images\\WebElementScreenShots\\" + "element_" + filename + ".png";
+				String reportImagePath = currentDir+"//images//WebElementScreenShots//" + "element_" + filename + ".png";
 				//Write a new for reporting purpose
 				ImageIO.write(dest, "png", reportShot);
-				//save Image screenshot In C:\\
+				//save Image screenshot In C://
 				FileUtils.copyFile(reportShot, new File(reportImagePath));
 				logImg = reportImagePath;
 			}
@@ -3876,7 +3827,7 @@ public class Keywords extends BaseClass
 				XWPFPictureData pic = iterator.next();
 				byte[] bytepic = pic.getData();
 				BufferedImage imag = ImageIO.read(new ByteArrayInputStream(bytepic));
-				String extractedFolderImgPath = currentDir+"\\Doc_images";
+				String extractedFolderImgPath = currentDir+"//Doc_images";
 				//If directory does not exist, create a new directory
 				FILE = new File(extractedFolderImgPath);
 				if(!FILE.exists()) {FILE.mkdir();}
